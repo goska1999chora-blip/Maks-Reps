@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maks Reps | Premium Finds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #050505; color: white; overflow-x: hidden; }
+        .red-glow { box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); }
+        .btn-smooth { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .btn-smooth:hover { transform: translateY(-2px); filter: brightness(1.2); }
+        .glass-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); }
+        .agent-btn { font-size: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px; border-radius: 8px; transition: 0.2s; }
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body x-data="siteHandler()">
+
+    <nav class="fixed w-full z-50 px-6 py-4 flex justify-between items-center bg-black/50 backdrop-blur-md border-b border-white/5">
+        <div class="text-2xl font-black tracking-tighter cursor-pointer" @click="view = 'home'">
+            MAKS<span class="text-red-600">REPS</span>
+        </div>
+        
+        <div class="flex items-center gap-4">
+            <button @click="openMenu = true" class="p-2 hover:bg-white/10 rounded-lg transition">
+                <i class="fa-solid fa-bars-staggered text-xl"></i>
+            </button>
+            <a href="#" class="hidden md:block bg-red-600 px-6 py-2 rounded-full font-bold red-glow btn-smooth">Discord</a>
+        </div>
+    </nav>
+
+    <main class="min-h-screen pt-24">
+        
+        <template x-if="view === 'home'">
+            <section x-transition class="flex flex-col items-center justify-center text-center px-4 py-20">
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-red-900/10 via-transparent to-transparent -z-10"></div>
+                <h1 class="text-5xl md:text-8xl font-extrabold mb-6 tracking-tight" x-text="t.heroTitle"></h1>
+                <p class="max-w-xl text-gray-400 text-lg mb-10" x-text="t.heroSub"></p>
+                <div class="flex flex-col md:flex-row gap-4">
+                    <button @click="view = 'products'" class="bg-red-600 px-10 py-4 rounded-xl font-bold text-lg red-glow btn-smooth" x-text="t.browseBtn"></button>
+                    <button @click="openMenu = true" class="glass-card px-10 py-4 rounded-xl font-bold text-lg btn-smooth border border-white/10" x-text="t.joinBtn"></button>
+                </div>
+            </section>
+        </template>
+
+        <template x-if="view === 'products'">
+            <section x-transition class="max-w-7xl mx-auto px-6 pb-20">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-10 gap-6">
+                    <div>
+                        <h2 class="text-4xl font-bold mb-2" x-text="t.productsTitle"></h2>
+                        <p class="text-gray-500" x-text="t.productsSub"></p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="bg-red-600 px-4 py-2 rounded-lg text-sm font-bold">All</button>
+                        <button class="glass-card px-4 py-2 rounded-lg text-sm">Shoes</button>
+                        <button class="glass-card px-4 py-2 rounded-lg text-sm">Apparel</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <template x-for="product in products" :key="product.id">
+                        <div class="glass-card p-4 rounded-2xl flex flex-col btn-smooth group">
+                            <div class="relative aspect-square mb-4 overflow-hidden rounded-xl bg-white/5">
+                                <img :src="product.image" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                                <div class="absolute top-2 right-2 bg-black/60 px-2 py-1 rounded-md text-xs font-bold text-red-500" x-text="product.price"></div>
+                            </div>
+                            
+                            <h3 class="font-bold text-lg mb-4 truncate" x-text="product.name"></h3>
+                            
+                            <div class="space-y-2">
+                                <p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Select Agent</p>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <a :href="product.kakobuy" target="_blank" class="agent-btn bg-[#FF4D4D] text-white hover:bg-[#ff3333]">
+                                        <i class="fa-solid fa-k"></i> Kakobuy
+                                    </a>
+                                    <a :href="product.usfans" target="_blank" class="agent-btn bg-[#2563eb] text-white hover:bg-[#1d4ed8]">
+                                        <i class="fa-solid fa-u"></i> USFans
+                                    </a>
+                                </div>
+                                <a :href="product.qc" target="_blank" class="block w-full text-center py-2 mt-2 text-xs text-gray-400 hover:text-white transition">View QC Photos</a>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </section>
+        </template>
+    </main>
+
+    <div x-show="openMenu" class="fixed inset-y-0 right-0 w-full md:w-96 bg-[#0a0a0a] z-[60] p-6 shadow-2xl border-l border-white/5" x-cloak x-transition:enter="transition ease-out duration-300" x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-xl font-bold">Menu</h2>
+            <button @click="openMenu = false" class="w-10 h-10 flex items-center justify-center glass-card rounded-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="space-y-3">
+            <template x-for="item in menuItems">
+                <button @click="view = item.view; openMenu = false" class="w-full flex items-center justify-between p-4 glass-card rounded-xl btn-smooth group">
+                    <div class="flex items-center gap-4">
+                        <i :class="item.icon" class="text-gray-400 group-hover:text-red-500"></i>
+                        <span class="font-medium" x-text="item.label[lang]"></span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-xs text-gray-500"></i>
+                </button>
+            </template>
+        </div>
+        
+        <div class="mt-10 border-t border-white/5 pt-6">
+            <p class="text-xs font-bold text-gray-500 mb-4">Settings</p>
+            <div class="flex justify-between items-center glass-card p-4 rounded-xl">
+                <span>Language</span>
+                <div class="flex gap-2">
+                    <button @click="setLang('en')" class="p-1 rounded" :class="lang === 'en' ? 'bg-red-600/20 border border-red-600' : ''"><img src="https://flagcdn.com/w20/gb.png"></button>
+                    <button @click="setLang('pl')" class="p-1 rounded" :class="lang === 'pl' ? 'bg-red-600/20 border border-red-600' : ''"><img src="https://flagcdn.com/w20/pl.png"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div x-show="openMenu" @click="openMenu = false" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[55]" x-cloak></div>
+
+    <script>
+        function siteHandler() {
+            return {
+                view: 'home',
+                openMenu: false,
+                lang: 'pl',
+                t: {},
+                products: [
+                    {
+                        id: 1,
+                        name: "Jordan 4 Retro Military Black",
+                        price: "240 CNY",
+                        image: "https://images.stockx.com/360/Air-Jordan-4-Retro-Military-Black/Images/Air-Jordan-4-Retro-Military-Black/Lv2/img01.jpg?auto=compress&w=480",
+                        kakobuy: "https://kakobuy.com/register?inviteCode=maksr3ps",
+                        usfans: "https://usfans.com/register?inviteCode=DJPZ6T",
+                        qc: "#"
+                    },
+                    {
+                        id: 2,
+                        name: "Trapstar Hyperdrive Jacket",
+                        price: "380 CNY",
+                        image: "https://static.restocks.net/products/trapstar-hyperdrive-puffer-jacket-black-1-1000.png",
+                        kakobuy: "https://kakobuy.com/item/123",
+                        usfans: "https://usfans.com/item/123",
+                        qc: "#"
+                    }
+                    // Tutaj możesz dodawać kolejne produkty w ten sam sposób
+                ],
+                translations: {
+                    pl: {
+                        heroTitle: 'Najlepsza Społeczność Reps',
+                        heroSub: 'Design klasy premium. Czysty układ. Nowoczesne wizualizacje.',
+                        browseBtn: 'Przeglądaj Produkty',
+                        joinBtn: 'Dołącz do nas',
+                        productsTitle: 'Nasze Znaleziska',
+                        productsSub: 'Starannie wybrane produkty od najlepszych sprzedawców.'
+                    },
+                    en: {
+                        heroTitle: 'The Ultimate Rep Community',
+                        heroSub: 'Premium design. Clean layout. Modern visuals.',
+                        browseBtn: 'Browse Products',
+                        joinBtn: 'Join Community',
+                        productsTitle: 'Browse Finds',
+                        productsSub: 'Handpicked products from top tier sellers.'
+                    }
+                },
+                menuItems: [
+                    { label: {pl: 'Start', en: 'Home'}, icon: 'fa-solid fa-house', view: 'home' },
+                    { label: {pl: 'Produkty', en: 'Products'}, icon: 'fa-solid fa-magnifying-glass', view: 'products' },
+                    { label: {pl: 'Śledzenie', en: 'Tracking'}, icon: 'fa-solid fa-truck-fast', view: 'home' }
+                ],
+                init() { this.t = this.translations[this.lang]; },
+                setLang(l) { this.lang = l; this.t = this.translations[l]; }
+            }
+        }
+    </script>
+</body>
+</html>
