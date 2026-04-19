@@ -9,29 +9,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #000000; color: white; overflow-x: hidden; }
-        
-        .hero-title { font-size: 48px; line-height: 1.1; font-weight: 900; text-transform: uppercase; letter-spacing: -2px; }
-        @media (min-width: 768px) { .hero-title { font-size: 80px; } }
-        
-        .btn-main-red { background-color: #ff0000; box-shadow: 0 0 20px rgba(255, 0, 0, 0.3); color: white; border-radius: 12px; font-weight: 800; text-transform: uppercase; transition: 0.2s; }
-        .btn-main-black { background-color: #111111; color: white; border: 1px solid #222; border-radius: 12px; font-weight: 800; text-transform: uppercase; transition: 0.2s; }
-        .btn-main-red:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(255, 0, 0, 0.5); }
-
-        .menu-sidebar { background-color: #080808; border-left: 1px solid #111; }
-        .menu-tile { background-color: #111111; border: 1px solid #1a1a1a; border-radius: 16px; padding: 16px; transition: 0.2s; cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
-        .menu-tile:hover { background-color: #161616; border-color: #333; }
-        .menu-icon-box { background-color: #1a1a1a; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 12px; color: #666; font-size: 18px; }
-
-        .agent-btn { border-radius: 10px; font-weight: 900; text-transform: uppercase; font-size: 12px; transition: 0.2s; padding: 14px; width: 100%; display: flex; justify-content: space-between; align-items: center; }
-        .btn-kako { background-color: #ff5c5c; color: white; }
-        .btn-usf { background-color: #3b82f6; color: white; }
-        .btn-acb { background-color: #00d1b2; color: #000; }
-        
-        .card-dark { background: #080808; border: 1px solid #1a1a1a; border-radius: 24px; }
-        .option-btn { background: #111; border: 1px solid #222; padding: 10px 15px; border-radius: 10px; font-size: 11px; font-weight: 700; color: #888; transition: 0.2s; }
-        .option-btn:hover { border-color: #ff0000; color: white; }
-
+        body { font-family: 'Inter', sans-serif; background-color: #050505; color: white; overflow-x: hidden; }
+        .red-glow-btn { background-color: #ff0000; box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); transition: all 0.3s ease; }
+        .red-glow-btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(255, 0, 0, 0.6); }
+        .menu-card { background: #111111; border: 1px solid #1a1a1a; transition: all 0.2s ease; cursor: pointer; }
+        .menu-card:hover { background: #161616; border-color: #333; transform: translateX(5px); }
+        .tool-card { background: #111111; border: 1px solid #1a1a1a; border-radius: 24px; padding: 2.5rem; }
+        .icon-box { background: #1a1a1a; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 10px; color: #666; }
+        .btn-k { background: #ff5c5c; border-radius: 10px; font-weight: 900; color: white; }
+        .btn-us { background: #3b82f6; border-radius: 10px; font-weight: 900; color: white; }
+        .btn-ac { background: #00d1b2; border-radius: 10px; font-weight: 900; color: #000; }
+        input { background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; outline: none; }
         [x-cloak] { display: none !important; }
         .animate-fade { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -43,39 +31,38 @@
         <div class="text-2xl font-black tracking-tighter cursor-pointer uppercase" @click="view = 'home'">
             MAKS<span class="text-red-600">REPS</span>
         </div>
-        <button @click="openMenu = true" class="w-11 h-11 flex items-center justify-center bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition text-white">
-            <i class="fa-solid fa-bars-staggered text-xl"></i>
+        <button @click="openMenu = true" class="w-11 h-11 flex items-center justify-center bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition">
+            <i class="fa-solid fa-bars-staggered text-xl text-white"></i>
         </button>
     </nav>
 
-    <main class="min-h-screen pt-32 pb-20 px-6">
+    <main class="min-h-screen pt-32 pb-20">
         
         <template x-if="view === 'home'">
-            <section class="flex flex-col items-center justify-center text-center py-20 animate-fade">
-                <h1 class="hero-title mb-8" x-html="t.heroTitle"></h1>
-                <p class="text-gray-500 max-w-xl mb-16 text-lg font-medium" x-text="t.heroSub"></p>
-                <div class="flex flex-col md:flex-row gap-5 w-full max-w-sm md:max-w-none justify-center">
-                    <button @click="view = 'products'" class="btn-main-red px-12 py-5 w-full md:w-auto" x-text="t.browseBtn"></button>
-                    <button @click="window.open(discordLink)" class="btn-main-black px-12 py-5 w-full md:w-auto" x-text="t.discordBtn"></button>
+            <section class="flex flex-col items-center justify-center text-center px-4 py-20 animate-fade">
+                <h1 class="text-6xl md:text-[90px] font-black leading-tight mb-6 tracking-tighter uppercase" x-html="t.heroTitle"></h1>
+                <div class="flex flex-col md:flex-row gap-5 mt-8">
+                    <button @click="view = 'products'" class="red-glow-btn px-12 py-4 rounded-2xl font-black text-lg uppercase" x-text="t.browseBtn"></button>
+                    <button @click="view = 'converter'" class="bg-white/5 border border-white/10 px-12 py-4 rounded-2xl font-black text-lg hover:bg-white/10 transition uppercase">Link Converter</button>
                 </div>
             </section>
         </template>
 
         <template x-if="view === 'products'">
-            <section class="max-w-7xl mx-auto animate-fade">
+            <section class="max-w-7xl mx-auto px-6 animate-fade">
                 <h2 class="text-4xl font-black uppercase mb-12"><span x-text="t.latest"></span> <span class="text-red-600">Finds</span></h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     <template x-for="product in products">
-                        <div class="bg-[#111] p-4 rounded-[2.5rem] border border-white/5 flex flex-col group transition hover:border-white/10">
+                        <div class="menu-card p-4 rounded-[2.5rem] flex flex-col group">
                             <div class="relative aspect-square mb-6 overflow-hidden rounded-[2rem] bg-[#0c0c0c]">
                                 <img :src="product.image" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
                                 <div class="absolute top-4 right-4 bg-black/80 backdrop-blur-md px-4 py-2 rounded-full text-sm font-black text-red-500 border border-white/10" 
                                      x-text="currency === 'PLN' ? product.pricePLN + ' PLN' : product.priceUSD + ' USD'"></div>
                             </div>
                             <h3 class="font-bold text-lg mb-6 px-2 truncate" x-text="product.name"></h3>
-                            <div class="grid grid-cols-2 gap-3 px-1 mt-auto">
-                                <a :href="product.kakobuy" target="_blank" class="agent-btn btn-kako py-3 flex items-center justify-center text-[10px] uppercase">Kakobuy</a>
-                                <a :href="product.usfans" target="_blank" class="agent-btn btn-usf py-3 flex items-center justify-center text-[10px] uppercase">USFans</a>
+                            <div class="grid grid-cols-2 gap-3 px-1">
+                                <a :href="generateCustomLink('kakobuy', product.url)" target="_blank" class="btn-k py-3 flex items-center justify-center text-[10px] uppercase">Kakobuy</a>
+                                <a :href="generateCustomLink('usfans', product.url)" target="_blank" class="btn-us py-3 flex items-center justify-center text-[10px] uppercase">USFans</a>
                             </div>
                         </div>
                     </template>
@@ -84,80 +71,53 @@
         </template>
 
         <template x-if="view === 'converter'">
-            <section class="max-w-3xl mx-auto animate-fade">
-                <div class="p-8 bg-[#080808] border border-white/5 rounded-3xl">
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-12 h-12 bg-red-600/10 rounded-xl flex items-center justify-center text-red-600 text-2xl">
-                            <i class="fa-solid fa-robot"></i>
+            <section class="max-w-3xl mx-auto px-6 animate-fade">
+                <div class="tool-card">
+                    <h2 class="text-3xl font-black mb-2 uppercase">Link <span class="text-red-600">Converter</span></h2>
+                    <p class="text-gray-500 mb-8 font-medium">Wklej link, aby otrzymać wersję afiliacyjną.</p>
+                    <input type="text" x-model="inputUrl" @input="convertLink()" placeholder="Wklej link Weidian/Taobao/1688..." class="w-full p-5 rounded-2xl mb-8 transition text-lg shadow-inner">
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" x-show="agentLinks.kako" x-cloak>
+                        <a :href="agentLinks.kako" target="_blank" class="btn-k p-5 flex justify-between items-center text-white">
+                            <span class="uppercase text-xs font-black">Kakobuy</span><i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                        <a :href="agentLinks.usf" target="_blank" class="btn-us p-5 flex justify-between items-center text-white">
+                            <span class="uppercase text-xs font-black">USFans</span><i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                        <a :href="agentLinks.acb" target="_blank" class="btn-ac p-5 flex justify-between items-center text-black">
+                            <span class="uppercase text-xs font-black">ACBuy</span><i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                        <div @click="copyRaw()" class="bg-[#333] p-5 rounded-xl flex justify-between items-center cursor-pointer text-gray-400 font-bold">
+                            <span class="uppercase text-xs">Copy RAW</span><i class="fa-solid fa-copy"></i>
                         </div>
-                        <h2 class="text-3xl font-black uppercase tracking-tighter">Link Converter</h2>
                     </div>
-                    <p class="text-gray-500 mb-8 font-medium">Wklej link, aby automatycznie pobrać dane produktu i QC.</p>
-                    <input type="text" x-model="inputUrl" @keyup.enter="autoFetch()" placeholder="Wklej link Taobao/Weidian/1688..." class="w-full p-6 rounded-2xl mb-4 transition text-lg border border-white/10 bg-white/5 outline-none focus:border-red-600/50">
-                    <button @click="autoFetch()" class="btn-main-red w-full py-5 uppercase font-black">Sprawdź produkt</button>
                 </div>
             </section>
         </template>
 
-        <template x-if="view === 'qc_search'">
-            <section class="max-w-3xl mx-auto animate-fade text-center">
-                <div class="p-10 bg-[#080808] border border-white/5 rounded-3xl">
-                    <i class="fa-solid fa-camera text-red-600 text-4xl mb-4"></i>
-                    <h2 class="text-3xl font-black uppercase mb-4">Quality <span class="text-red-600">Checks</span></h2>
-                    <p class="text-gray-500 mb-8">Podejrzyj zdjęcia z magazynu agenta wklejając link produktu.</p>
-                    <input type="text" x-model="qcUrl" placeholder="Wklej link do przedmiotu..." class="w-full p-6 rounded-2xl mb-8 bg-white/5 border border-white/10 outline-none">
-                    <button @click="inputUrl = qcUrl; autoFetch()" class="btn-main-red py-5 px-10 rounded-xl w-full font-black uppercase">Sprawdź zdjęcia QC</button>
+        <template x-if="view === 'qc'">
+            <section class="max-w-3xl mx-auto px-6 animate-fade">
+                <div class="tool-card text-center">
+                    <h2 class="text-3xl font-black mb-2 uppercase text-white">Quality <span class="text-red-600">Checks</span></h2>
+                    <p class="text-gray-500 mb-8">Podejrzyj zdjęcia z magazynu (QC).</p>
+                    <input type="text" x-model="qcUrl" placeholder="Wklej link do przedmiotu..." class="w-full p-5 rounded-2xl mb-8 text-lg">
+                    <a :href="'https://www.kakobuy.com/index/item/quality_inspection?url=' + encodeURIComponent(qcUrl)" target="_blank" class="bg-white text-black p-5 rounded-xl flex justify-center items-center w-full uppercase font-black" x-show="qcUrl">Sprawdź QC na Kakobuy</a>
                 </div>
             </section>
         </template>
 
-        <template x-if="view === 'product_page' && activeItem">
-            <section class="max-w-4xl mx-auto animate-fade space-y-8">
-                <div class="card-dark p-6">
-                    <div class="relative aspect-square max-h-[400px] mx-auto mb-8 rounded-2xl overflow-hidden bg-black flex items-center justify-center border border-white/5">
-                        <img :src="activeItem.image" class="w-full h-full object-contain">
+        <template x-if="view === 'calculator'">
+            <section class="max-w-3xl mx-auto px-6 animate-fade">
+                <div class="tool-card">
+                    <h2 class="text-3xl font-black mb-6 uppercase text-red-600">Ship Calculator</h2>
+                    <div class="mb-10 max-w-sm">
+                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 px-1">Waga (Gramy)</label>
+                        <input type="number" x-model="weight" placeholder="4000" class="w-full p-5 rounded-2xl text-xl font-bold transition">
                     </div>
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                        <div class="max-w-md">
-                            <h2 class="text-2xl font-black uppercase leading-tight" x-text="activeItem.name"></h2>
-                            <p class="text-4xl font-black text-red-600 mt-2" x-text="'$' + activeItem.price"></p>
-                        </div>
-                        <div class="flex gap-3 w-full md:w-auto">
-                            <a :href="activeItem.links.usf" target="_blank" class="flex-1 bg-white text-black px-8 py-4 rounded-xl font-black flex items-center justify-center gap-2 uppercase text-xs">
-                                Order on USFans
-                            </a>
-                            <button @click="navigator.clipboard.writeText(activeItem.originalUrl); alert('Link skopiowany!')" class="btn-main-black p-4"><i class="fa-solid fa-link"></i></button>
-                        </div>
+                    <div class="grid grid-cols-1 gap-4" x-show="weight > 0" x-cloak>
+                        <div class="bg-white/5 p-6 rounded-3xl border border-white/5 flex justify-between items-center"><span class="font-black uppercase text-xs">Kakobuy</span><span class="text-2xl font-black text-red-500" x-text="calcShipping(weight, 'kakobuy') + ' ' + currency"></span></div>
+                        <div class="bg-white/5 p-6 rounded-3xl border border-white/5 flex justify-between items-center"><span class="font-black uppercase text-xs">USFans</span><span class="text-2xl font-black text-blue-500" x-text="calcShipping(weight, 'usfans') + ' ' + currency"></span></div>
                     </div>
-                </div>
-
-                <div class="card-dark p-6">
-                    <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4">Dostępne Rozmiary / Wersje</p>
-                    <div class="flex flex-wrap gap-2">
-                        <template x-for="opt in activeItem.options">
-                            <button class="option-btn" x-text="opt"></button>
-                        </template>
-                    </div>
-                </div>
-
-                <div class="card-dark p-6">
-                    <div class="flex items-center gap-3 mb-6">
-                        <i class="fa-solid fa-camera text-red-600"></i>
-                        <h3 class="text-xl font-black uppercase">Warehouse QC</h3>
-                    </div>
-                    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
-                        <template x-for="img in activeItem.qc">
-                            <div class="aspect-square rounded-xl bg-white/5 overflow-hidden border border-white/5 hover:border-red-600 transition cursor-pointer" @click="window.open(img)">
-                                <img :src="img" class="w-full h-full object-cover">
-                            </div>
-                        </template>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <a :href="activeItem.links.kako" target="_blank" class="agent-btn btn-kako"><span>Kakobuy</span><i class="fa-solid fa-arrow-right"></i></a>
-                    <a :href="activeItem.links.usf" target="_blank" class="agent-btn btn-usf"><span>USFans</span><i class="fa-solid fa-arrow-right"></i></a>
-                    <a :href="activeItem.links.acb" target="_blank" class="agent-btn btn-acb"><span>ACBuy</span><i class="fa-solid fa-arrow-right"></i></a>
                 </div>
             </section>
         </template>
@@ -165,55 +125,25 @@
 
     <div x-show="openMenu" class="fixed inset-0 z-[100]" x-cloak>
         <div class="absolute inset-0 bg-black/80 backdrop-blur-md" @click="openMenu = false"></div>
-        <div class="absolute inset-y-0 right-0 w-full md:w-[400px] menu-sidebar p-8 shadow-2xl overflow-y-auto" x-transition>
-            <div class="flex justify-between items-center mb-12 text-white">
-                <h2 class="text-3xl font-black uppercase tracking-tighter">MENU</h2>
-                <button @click="openMenu = false" class="w-10 h-10 bg-white/5 rounded-xl hover:bg-red-600 transition"><i class="fa-solid fa-xmark"></i></button>
+        <div class="absolute inset-y-0 right-0 w-full md:w-[400px] bg-[#080808] p-8 shadow-2xl border-l border-white/5 overflow-y-auto" x-transition>
+            <div class="flex justify-between items-center mb-10 text-white">
+                <h2 class="text-2xl font-black uppercase">Menu</h2>
+                <button @click="openMenu = false" class="w-10 h-10 bg-white/5 rounded-xl"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <div class="mb-10">
-                <p class="text-[10px] font-black text-gray-600 tracking-widest mb-4 uppercase">Główne</p>
-                <div class="space-y-4">
-                    <div @click="view = 'products'; openMenu = false" class="menu-tile">
-                        <div class="flex items-center gap-4">
-                            <div class="menu-icon-box"><i class="fa-solid fa-magnifying-glass"></i></div>
-                            <span class="font-bold">Browse Finds</span>
-                        </div>
-                    </div>
-                    <div class="menu-tile" @click="window.open(discordLink)">
-                        <div class="flex items-center gap-4">
-                            <div class="menu-icon-box !bg-red-600/10 !text-red-600"><i class="fa-brands fa-discord"></i></div>
-                            <span class="font-bold">Discord</span>
-                        </div>
-                        <span class="bg-red-600 text-[10px] font-black px-3 py-1.5 rounded-md uppercase">Dołącz</span>
-                    </div>
-                    <div @click="view = 'converter'; openMenu = false" class="menu-tile border-red-600/20 bg-red-600/5">
-                        <div class="flex items-center gap-4">
-                            <div class="menu-icon-box !text-red-500"><i class="fa-solid fa-robot"></i></div>
-                            <span class="font-bold">Link Converter</span>
-                        </div>
-                        <span class="text-[9px] font-black text-red-500 uppercase">BOT</span>
-                    </div>
-                    <div @click="view = 'qc_search'; openMenu = false" class="menu-tile">
-                        <div class="flex items-center gap-4">
-                            <div class="menu-icon-box"><i class="fa-solid fa-camera"></i></div>
-                            <span class="font-bold">Quality Checks</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="space-y-3 mb-10">
+                <div @click="view = 'products'; openMenu = false" class="menu-card p-4 rounded-2xl flex items-center gap-4"><div class="icon-box"><i class="fa-solid fa-magnifying-glass"></i></div><span class="font-bold uppercase text-xs text-white">Browse Finds</span></div>
+                <div @click="view = 'converter'; openMenu = false" class="menu-card p-4 rounded-2xl flex items-center gap-4"><div class="icon-box"><i class="fa-solid fa-link"></i></div><span class="font-bold uppercase text-xs text-white">Link Converter</span></div>
+                <div @click="view = 'qc'; openMenu = false" class="menu-card p-4 rounded-2xl flex items-center gap-4"><div class="icon-box"><i class="fa-solid fa-camera"></i></div><span class="font-bold uppercase text-xs text-white">Quality Checks</span></div>
+                <div @click="view = 'calculator'; openMenu = false" class="menu-card p-4 rounded-2xl flex items-center gap-4"><div class="icon-box"><i class="fa-solid fa-calculator"></i></div><span class="font-bold uppercase text-xs text-white">Ship Calculator</span></div>
+                <a :href="discordLink" target="_blank" class="menu-card p-4 rounded-2xl flex items-center gap-4 border-red-600/30 bg-red-600/5 text-white"><div class="icon-box !text-red-500"><i class="fa-brands fa-discord"></i></div><span class="font-bold uppercase text-xs">Discord</span></a>
             </div>
 
-            <div class="border-t border-white/5 pt-8">
-                <p class="text-[10px] font-black text-gray-600 tracking-widest mb-4 uppercase">Ustawienia</p>
-                <div class="bg-[#111] p-6 rounded-2xl space-y-6">
-                    <div class="flex justify-between items-center text-sm font-bold text-gray-400">
-                        <span>Język</span>
-                        <div class="flex gap-3"><img src="https://flagcdn.com/w40/pl.png" class="w-6 opacity-100"><img src="https://flagcdn.com/w40/gb.png" class="w-6 opacity-30"></div>
-                    </div>
-                    <div class="flex justify-between items-center text-sm font-bold text-gray-400">
-                        <span>Waluta</span>
-                        <div class="flex bg-black p-1 rounded-lg border border-white/5 text-[10px]"><button class="bg-red-600 px-4 py-2 rounded-md text-white">PLN</button><button class="px-4 py-2 text-gray-600">USD</button></div>
-                    </div>
+            <div class="border-t border-white/5 pt-8 text-white">
+                <h3 class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-4">Ustawienia</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <button @click="toggleLang()" class="bg-white/5 p-4 rounded-xl text-xs font-bold border border-white/10 uppercase" x-text="'Język: ' + lang"></button>
+                    <button @click="toggleCurrency()" class="bg-white/5 p-4 rounded-xl text-xs font-bold border border-white/10 uppercase" x-text="'Waluta: ' + currency"></button>
                 </div>
             </div>
         </div>
@@ -222,57 +152,66 @@
     <script>
         function siteHandler() {
             return {
-                view: 'home', openMenu: false, lang: 'pl', currency: 'PLN', inputUrl: '', qcUrl: '', activeItem: null,
+                view: 'home', openMenu: false, lang: 'PL', currency: 'PLN', inputUrl: '', weight: '', qcUrl: '',
+                agentLinks: { kako: '', usf: '', acb: '', raw: '' },
                 discordLink: 'https://discord.gg/DTb5mkpNuH',
                 aff: { kakobuy: 'maksr3ps', usfans: 'DJPZ6T', acbuy: 'KV2WLD' },
-                t: { heroTitle: 'THE ULTIMATE<br><span class="text-red-600">REP</span> COMMUNITY', heroSub: 'Najlepsze znaleziska, sprawdzeni agenci i największa społeczność.', browseBtn: 'Przeglądaj Produkty', discordBtn: 'Discord', latest: 'Najnowsze' },
+                t: {},
+                translations: {
+                    PL: { heroTitle: 'The Ultimate<br><span class="text-red-600">Rep</span> Tool', browseBtn: 'Przeglądaj Sklep', latest: 'Najnowsze' },
+                    EN: { heroTitle: 'The Ultimate<br><span class="text-red-600">Rep</span> Tool', browseBtn: 'Browse Store', latest: 'Latest' }
+                },
                 products: [
-                    { name: "Numeris", pricePLN: "180", priceUSD: "45", image: "https://cdn.discordapp.com/attachments/1484846186153250898/1484846186652369029/pcitem1238871281-06220000019a9e195a380a23041a-unadjust_1080_1080.png", kakobuy: "#", usfans: "#" }
+                    { name: "Numeris", pricePLN: "180", priceUSD: "45", image: "https://photos.pandalabs.io/jacket-trapstar-black.jpg", url: "https://weidian.com/item.html?itemID=7614479098" },
+                    { name: "Spodnie ADWYSD", pricePLN: "45", priceUSD: "12", image: "https://photos.pandalabs.io/aj4-black-cat.jpg", url: "https://weidian.com/item.html?itemID=7231456188" }
                 ],
+                init() { this.t = this.translations[this.lang]; },
+                toggleLang() { this.lang = this.lang === 'PL' ? 'EN' : 'PL'; this.t = this.translations[this.lang]; },
+                toggleCurrency() { this.currency = this.currency === 'PLN' ? 'USD' : 'PLN'; },
+                
+                // FUNKCJA Z TWOJEGO BOTA DISCORD (JavaScript version)
+                extractId(url) {
+                    url = url.toLowerCase();
+                    if (url.includes("taobao.com") || url.includes("tmall.com")) {
+                        let m = url.match(/id=(\d+)/);
+                        if (m) return { id: m[1], usfType: "1", acType: "TB", clean: `https://item.taobao.com/item.htm?id=${m[1]}` };
+                    }
+                    if (url.includes("weidian.com")) {
+                        let m = url.match(/(?:itemid|item_id|itemid=)(\d+)/i);
+                        if (m) return { id: m[1], usfType: "1", acType: "WD", clean: `https://weidian.com/item.html?itemID=${m[1]}` };
+                    }
+                    if (url.includes("1688.com")) {
+                        let m = url.match(/(?:offer\/|id=)(\d+)/);
+                        if (m) return { id: m[1], usfType: "2", acType: "1688", clean: `https://detail.1688.com/offer/${m[1]}.html` };
+                    }
+                    return null;
+                },
 
-                // FUNKCJA AUTOMATYCZNEGO POBIERANIA NAZWY I DANYCH
-                autoFetch() {
-                    let url = this.inputUrl.trim();
-                    if (!url) return;
+                convertLink() {
+                    let val = this.inputUrl.trim();
+                    if (!val) { this.agentLinks = { kako: '', usf: '', acb: '', raw: '' }; return; }
+                    
+                    let data = this.extractId(val);
+                    if (data) {
+                        this.agentLinks.raw = data.clean;
+                        this.agentLinks.kako = `https://www.kakobuy.com/item/details?url=${encodeURIComponent(data.clean)}&affcode=${this.aff.kakobuy}`;
+                        this.agentLinks.usf = `https://www.usfans.com/product/${data.usfType}/${data.id}?inviteCode=${this.aff.usfans}`;
+                        this.agentLinks.acb = `https://m.acbuy.com/product?id=${data.id}&source=${data.acType}&inviteCode=${this.aff.acbuy}`;
+                    } else {
+                        // Rezerwowy konwerter dla innych linków
+                        this.agentLinks.raw = val;
+                        this.agentLinks.kako = `https://www.kakobuy.com/item/details?url=${encodeURIComponent(val)}&affcode=${this.aff.kakobuy}`;
+                        this.agentLinks.usf = `https://www.usfans.com/product/search?url=${encodeURIComponent(val)}&ref=${this.aff.usfans}`;
+                        this.agentLinks.acb = `https://www.acbuy.com/product/search?url=${encodeURIComponent(val)}&ref=${this.aff.acbuy}`;
+                    }
+                },
 
-                    // 1. Próba wyciągnięcia nazwy z URL (często w linkach Taobao/Weidian nazwa jest w parametrach lub ścieżce)
-                    let extractedName = "Product from Link";
-                    try {
-                        // Jeśli link zawiera czytelną nazwę (np. weidian.com/item.html?p=...&name=...)
-                        let urlObj = new URL(url);
-                        if(urlObj.searchParams.get('title')) extractedName = urlObj.searchParams.get('title');
-                        else if(urlObj.searchParams.get('item_name')) extractedName = urlObj.searchParams.get('item_name');
-                    } catch(e) {}
-
-                    // 2. Wyciąganie ID
-                    let id = "N/A";
-                    let idMatch = url.match(/(?:id=|itemID=|offer\/)(\d+)/);
-                    if(idMatch) id = idMatch[1];
-
-                    // 3. Generowanie dynamicznej karty
-                    this.activeItem = {
-                        name: extractedName.replace(/_/g, ' ').toUpperCase(),
-                        id: id,
-                        price: "Fetching...", // W prawdziwym API tu byłaby cena
-                        image: "https://file.uufinds.com/product/2026/04/15/2044313412956188673/major/2c92808a9d6ac29f019d8fffa56c38c0.webp",
-                        options: ["S", "M", "L", "XL", "Opcja 1", "Opcja 2"],
-                        qc: [
-                            "https://file.uufinds.com/qc/1.jpg", "https://file.uufinds.com/qc/2.jpg",
-                            "https://file.uufinds.com/qc/3.jpg", "https://file.uufinds.com/qc/4.jpg",
-                            "https://file.uufinds.com/qc/5.jpg"
-                        ],
-                        links: {
-                            kako: `https://www.kakobuy.com/item/details?url=${encodeURIComponent(url)}&affcode=${this.aff.kakobuy}`,
-                            usf: `https://www.usfans.com/product/1/${id}?ref=${this.aff.usfans}`,
-                            acb: `https://m.acbuy.com/product?id=${id}&source=TB&inviteCode=${this.aff.acbuy}`
-                        },
-                        originalUrl: url
-                    };
-
-                    this.view = 'product_page';
-                    this.inputUrl = '';
-                    this.qcUrl = '';
-                }
+                calcShipping(g, agent) {
+                    let rate = this.currency === 'PLN' ? 1 : 0.25;
+                    let base = agent === 'kakobuy' ? (45 + (g/1000 * 62)) : (42 + (g/1000 * 59));
+                    return Math.round(base * rate);
+                },
+                copyRaw() { navigator.clipboard.writeText(this.agentLinks.raw); alert('Skopiowano!'); }
             }
         }
     </script>
