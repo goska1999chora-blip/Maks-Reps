@@ -31,6 +31,10 @@
         .flag-icon { width: 28px; cursor: pointer; opacity: 0.3; transition: 0.2s; border: 2px solid transparent; padding: 1px; }
         .flag-icon.active { opacity: 1; border-color: #ff0000; border-radius: 4px; }
 
+        .card-dark { background: #080808; border: 1px solid #1a1a1a; border-radius: 24px; }
+        .option-btn { background: #111; border: 1px solid #222; padding: 10px 15px; border-radius: 10px; font-size: 12px; font-weight: 700; transition: 0.2s; }
+        .option-btn:hover { border-color: #ff0000; }
+
         [x-cloak] { display: none !important; }
         .animate-fade { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -92,27 +96,91 @@
                         <h2 class="text-3xl font-black uppercase tracking-tighter" x-text="t.convTitle"></h2>
                     </div>
                     <p class="text-gray-500 mb-8 font-medium" x-text="t.convDesc"></p>
-                    <input type="text" x-model="inputUrl" @input="convertLink()" :placeholder="t.convPlace" class="w-full p-6 rounded-2xl mb-8 transition text-lg border border-white/10 bg-white/5 outline-none focus:border-red-600/50">
-                    <div class="space-y-4" x-show="botResult" x-cloak>
-                        <div class="p-4 bg-white/5 rounded-xl border border-white/10 text-xs font-mono text-red-400 truncate" x-text="botResult.cleanUrl"></div>
-                        <div class="grid grid-cols-1 gap-3">
-                            <a :href="botResult.kako" target="_blank" class="agent-btn btn-kako"><span>Kakobuy</span><i class="fa-solid fa-arrow-right"></i></a>
-                            <a :href="botResult.usf" target="_blank" class="agent-btn btn-usf"><span>USFans</span><i class="fa-solid fa-arrow-right"></i></a>
-                            <a :href="botResult.acb" target="_blank" class="agent-btn btn-acb"><span>ACBuy</span><i class="fa-solid fa-arrow-right"></i></a>
-                        </div>
+                    <div class="relative">
+                        <input type="text" x-model="inputUrl" @keyup.enter="processLink()" :placeholder="t.convPlace" class="w-full p-6 rounded-2xl mb-4 transition text-lg border border-white/10 bg-white/5 outline-none focus:border-red-600/50">
+                        <button @click="processLink()" class="btn-main-red w-full py-4 uppercase font-black">Sprawdź produkt</button>
                     </div>
                 </div>
             </section>
         </template>
 
-        <template x-if="view === 'qc'">
-            <section class="max-w-3xl mx-auto animate-fade text-center">
-                <div class="p-10 bg-[#080808] border border-white/5 rounded-3xl">
-                    <i class="fa-solid fa-camera text-red-600 text-4xl mb-4"></i>
-                    <h2 class="text-3xl font-black uppercase mb-4">Quality <span class="text-red-600">Checks</span></h2>
-                    <p class="text-gray-500 mb-8" x-text="t.qcDesc"></p>
-                    <input type="text" x-model="qcUrl" placeholder="Wklej link do przedmiotu..." class="w-full p-6 rounded-2xl mb-8 bg-white/5 border border-white/10 outline-none">
-                    <a :href="'https://www.kakobuy.com/index/item/quality_inspection?url=' + encodeURIComponent(qcUrl)" target="_blank" class="btn-main-red py-5 px-10 rounded-xl inline-block w-full" x-show="qcUrl" x-text="t.qcBtn"></a>
+        <template x-if="view === 'product' && activeItem">
+            <section class="max-w-4xl mx-auto animate-fade space-y-8">
+                <div class="card-dark p-6">
+                    <div class="relative aspect-square max-h-[400px] mx-auto mb-8 rounded-2xl overflow-hidden bg-black flex items-center justify-center">
+                        <img :src="activeItem.mainImg" class="w-full h-full object-contain">
+                    </div>
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                        <div>
+                            <h2 class="text-3xl font-black uppercase" x-text="activeItem.name"></h2>
+                            <p class="text-4xl font-black text-red-600 mt-2" x-text="'$' + activeItem.price"></p>
+                        </div>
+                        <div class="flex gap-3 w-full md:w-auto">
+                            <a :href="activeItem.links.usf" target="_blank" class="flex-1 bg-white text-black px-8 py-4 rounded-xl font-black flex items-center justify-center gap-2 uppercase text-sm">
+                                <img src="https://www.usfans.com/favicon.ico" class="w-4"> Order product
+                            </a>
+                            <button @click="navigator.clipboard.writeText(activeItem.cleanUrl); alert('Link skopiowany!')" class="btn-main-black p-4"><i class="fa-solid fa-link"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-dark p-6">
+                    <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4">Dostępne Rozmiary (Sizes)</p>
+                    <div class="flex flex-wrap gap-2 mb-8">
+                        <template x-for="size in activeItem.sizes">
+                            <button class="option-btn" x-text="size"></button>
+                        </template>
+                    </div>
+
+                    <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4">Wersje (Versions)</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <template x-for="v in activeItem.versions">
+                            <button class="option-btn flex items-center gap-3 text-left">
+                                <div class="w-8 h-8 rounded bg-white/5 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                                    <img :src="activeItem.mainImg" class="w-full h-full object-cover">
+                                </div>
+                                <span class="truncate uppercase" x-text="v"></span>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div class="card-dark p-5">
+                        <p class="text-[9px] text-gray-500 font-black uppercase mb-1">Waga</p>
+                        <p class="text-xl font-black" x-text="activeItem.weight + 'g'"></p>
+                    </div>
+                    <div class="card-dark p-5">
+                        <p class="text-[9px] text-gray-500 font-black uppercase mb-1">Sprzedaż</p>
+                        <p class="text-xl font-black" x-text="activeItem.sales"></p>
+                    </div>
+                    <div class="card-dark p-5">
+                        <p class="text-[9px] text-gray-500 font-black uppercase mb-1">Status</p>
+                        <p class="text-xl font-black text-green-500">Dostępny</p>
+                    </div>
+                    <div class="card-dark p-5">
+                        <p class="text-[9px] text-gray-500 font-black uppercase mb-1">ID Produktu</p>
+                        <p class="text-xl font-black truncate" x-text="activeItem.id"></p>
+                    </div>
+                </div>
+
+                <div class="card-dark p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i class="fa-solid fa-camera text-red-600"></i>
+                        <h3 class="text-xl font-black uppercase">QC Photos</h3>
+                    </div>
+                    <div class="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                        <template x-for="img in activeItem.qcImages">
+                            <div class="aspect-square rounded-xl bg-white/5 overflow-hidden border border-white/5 hover:border-red-600 transition cursor-pointer" @click="window.open(img)">
+                                <img :src="img" class="w-full h-full object-cover">
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <a :href="activeItem.links.kako" target="_blank" class="agent-btn btn-kako py-5 px-6"><span>Kakobuy</span> <i class="fa-solid fa-arrow-right-long"></i></a>
+                    <a :href="activeItem.links.acb" target="_blank" class="agent-btn btn-acb py-5 px-6"><span>ACBuy</span> <i class="fa-solid fa-arrow-right-long"></i></a>
                 </div>
             </section>
         </template>
@@ -134,7 +202,6 @@
                             <div class="menu-icon-box"><i class="fa-solid fa-magnifying-glass"></i></div>
                             <span class="font-bold">Browse Finds</span>
                         </div>
-                        <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
                     </div>
                     <div class="menu-tile" @click="window.open(discordLink)">
                         <div class="flex items-center gap-4">
@@ -146,14 +213,7 @@
                     <div @click="view = 'converter'; openMenu = false" class="menu-tile border-red-600/20 bg-red-600/5">
                         <div class="flex items-center gap-4">
                             <div class="menu-icon-box !text-red-500"><i class="fa-solid fa-robot"></i></div>
-                            <span class="font-bold">Link Converter</span>
-                        </div>
-                        <span class="text-[9px] font-black text-red-500 uppercase">BOT</span>
-                    </div>
-                    <div @click="view = 'qc'; openMenu = false" class="menu-tile">
-                        <div class="flex items-center gap-4">
-                            <div class="menu-icon-box"><i class="fa-solid fa-camera"></i></div>
-                            <span class="font-bold">Quality Checks</span>
+                            <span class="font-bold uppercase">Product Engine</span>
                         </div>
                     </div>
                 </div>
@@ -184,7 +244,7 @@
     <script>
         function siteHandler() {
             return {
-                view: 'home', openMenu: false, lang: 'pl', currency: 'PLN', inputUrl: '', botResult: null, qcUrl: '',
+                view: 'home', openMenu: false, lang: 'pl', currency: 'PLN', inputUrl: '', activeItem: null,
                 discordLink: 'https://discord.gg/DTb5mkpNuH',
                 aff: { kakobuy: 'maksr3ps', usfans: 'DJPZ6T', acbuy: 'KV2WLD' },
                 t: {},
@@ -200,11 +260,9 @@
                         langLabel: 'Język',
                         currencyLabel: 'Waluta',
                         joinTag: 'Dołącz',
-                        convTitle: 'Bot Converter',
-                        convDesc: 'Wklej link, aby otrzymać wersję afiliacyjną dla 3 agentów jednocześnie.',
-                        convPlace: 'Wklej link Taobao/Weidian/1688...',
-                        qcDesc: 'Podejrzyj zdjęcia z magazynu agenta.',
-                        qcBtn: 'SPRAWDŹ ZDJĘCIA QC'
+                        convTitle: 'Product Engine',
+                        convDesc: 'Wklej link do przedmiotu, aby zobaczyć szczegóły, ceny i zdjęcia QC.',
+                        convPlace: 'Wklej link (Taobao, Weidian, USFans...)'
                     },
                     en: {
                         heroTitle: 'THE ULTIMATE<br><span class="text-red-600">REP</span> COMMUNITY',
@@ -217,26 +275,20 @@
                         langLabel: 'Language',
                         currencyLabel: 'Currency',
                         joinTag: 'Join',
-                        convTitle: 'Bot Converter',
-                        convDesc: 'Paste a link to get an affiliate version for 3 agents at once.',
-                        convPlace: 'Paste Taobao/Weidian/1688 link...',
-                        qcDesc: 'Preview warehouse photos from the agent.',
-                        qcBtn: 'CHECK QC PHOTOS'
+                        convTitle: 'Product Engine',
+                        convDesc: 'Paste a product link to see details, prices, and QC photos.',
+                        convPlace: 'Paste link (Taobao, Weidian, USFans...)'
                     }
                 },
                 products: [
                     {
-                        name: "Numeris",
-                        pricePLN: "180",
-                        priceUSD: "45",
+                        name: "Numeris", pricePLN: "180", priceUSD: "45",
                         image: "https://cdn.discordapp.com/attachments/1484846186153250898/1484846186652369029/pcitem1238871281-06220000019a9e195a380a23041a-unadjust_1080_1080.png?ex=69e3f786&is=69e2a606&hm=77bc1c07a0ac6f3283e9e17f72d0f7b9a9bc86dd61ee7a031677d35ec13c1262&",
                         kakobuy: "https://www.kakobuy.com/item/details?url=https%3A%2F%2Fweidian.com%2Fitem.html%3FitemID%3D7614479098&affcode=maksr3ps",
                         usfans: "https://www.usfans.com/product/3/7614479098/?ref=DJPZ6T"
                     },
                     {
-                        name: "Spodnie ADWYSD",
-                        pricePLN: "45",
-                        priceUSD: "11",
+                        name: "Spodnie ADWYSD", pricePLN: "45", priceUSD: "11",
                         image: "https://file.uufinds.com/product/2026/04/15/2044313412956188673/major/2c92808a9d6ac29f019d8fffa56c38c0.webp",
                         kakobuy: "https://ikako.vip/ejqfc",
                         usfans: "https://www.usfans.com/product/2/915690707683/?ref=DJPZ6T"
@@ -244,31 +296,41 @@
                 ],
                 init() { this.setLang(this.lang); },
                 setLang(l) { this.lang = l; this.t = this.translations[l]; },
-                
-                convertLink() {
+
+                processLink() {
                     let url = this.inputUrl.trim();
-                    if (!url) { this.botResult = null; return; }
-                    let id = "", usfType = "1", acSource = "TB", clean = url;
+                    if (!url) return;
 
-                    if (url.includes("taobao.com") || url.includes("tmall.com")) {
-                        let m = url.match(/id=(\d+)/);
-                        if (m) { id = m[1]; acSource = "TB"; clean = `https://item.taobao.com/item.htm?id=${id}`; }
-                    } else if (url.includes("weidian.com")) {
-                        let m = url.match(/(?:itemid|item_id|itemID=)(\d+)/);
-                        if (m) { id = m[1]; acSource = "WD"; clean = `https://weidian.com/item.html?itemID=${id}`; }
-                    } else if (url.includes("1688.com")) {
-                        let m = url.match(/(?:offer\/|id=)(\d+)/);
-                        if (m) { id = m[1]; usfType = "2"; acSource = "1688"; clean = `https://detail.1688.com/offer/${id}.html`; }
-                    }
+                    // Logika wyciagania ID i źródła
+                    let id = "N/A", clean = url;
+                    if (url.includes("id=")) { id = url.match(/id=(\d+)/)[1]; }
+                    else if (url.includes("itemID=")) { id = url.match(/itemID=(\d+)/)[1]; }
 
-                    if (id) {
-                        this.botResult = {
-                            cleanUrl: clean,
-                            kako: `https://www.kakobuy.com/item/details?url=${encodeURIComponent(clean)}&affcode=${this.aff.kakobuy}`,
-                            usf: `https://www.usfans.com/product/${usfType}/${id}?ref=${this.aff.usfans}`,
-                            acb: `https://m.acbuy.com/product?id=${id}&source=${acSource}&inviteCode=${this.aff.acbuy}`
-                        };
-                    }
+                    // Symulacja pobierania danych (Product Engine)
+                    this.activeItem = {
+                        id: id,
+                        name: "2026 F.ranc Away Player Version Jersey",
+                        price: "15.91",
+                        weight: "242",
+                        sales: "11",
+                        mainImg: "https://file.uufinds.com/product/2024/05/10/2c92808a9d6ac29f019d8fffa56c38c0.webp",
+                        sizes: ["S", "M", "L", "XL", "2XL", "3XL", "4XL"],
+                        versions: ["Away: MBAPPE #10", "Away: GRIEZMANN #7", "Away: OLISE #11", "Away: UPAMECANO #4", "Away: CAMAVINGA #6"],
+                        qcImages: [
+                            "https://file.uufinds.com/qc/1.jpg", "https://file.uufinds.com/qc/2.jpg",
+                            "https://file.uufinds.com/qc/3.jpg", "https://file.uufinds.com/qc/4.jpg",
+                            "https://file.uufinds.com/qc/5.jpg", "https://file.uufinds.com/qc/6.jpg"
+                        ],
+                        links: {
+                            kako: `https://www.kakobuy.com/item/details?url=${encodeURIComponent(url)}&affcode=${this.aff.kakobuy}`,
+                            usf: `https://www.usfans.com/product/1/${id}?ref=${this.aff.usfans}`,
+                            acb: `https://m.acbuy.com/product?id=${id}&source=TB&inviteCode=${this.aff.acbuy}`
+                        },
+                        cleanUrl: url
+                    };
+
+                    this.view = 'product';
+                    this.inputUrl = '';
                 }
             }
         }
