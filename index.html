@@ -3,25 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maks Reps | Premium Tools</title>
+    <title>Maks Reps | Premium Finds</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare safe.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #050505; color: white; overflow-x: hidden; }
-        .red-glow-btn { background-color: #ff0000; box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); transition: all 0.3s ease; }
-        .red-glow-btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(255, 0, 0, 0.6); }
-        .menu-card { background: #111111; border: 1px solid #1a1a1a; transition: all 0.2s ease; cursor: pointer; }
+
+        .red-glow-btn {
+            background-color: #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .red-glow-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.6);
+        }
+
+        .menu-card {
+            background: #111111;
+            border: 1px solid #1a1a1a;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
         .menu-card:hover { background: #161616; border-color: #333; transform: translateX(5px); }
-        .tool-card { background: #111111; border: 1px solid #1a1a1a; border-radius: 24px; padding: 2.5rem; }
-        .icon-box { background: #1a1a1a; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 10px; color: #666; }
+
+        .icon-box {
+            background: #1a1a1a;
+            width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 10px; color: #666;
+        }
+        .menu-card:hover .icon-box { color: #ff0000; }
+
         .btn-k { background: #ff5c5c; border-radius: 10px; font-weight: 900; }
         .btn-us { background: #3b82f6; border-radius: 10px; font-weight: 900; }
-        .btn-ac { background: #00d1b2; border-radius: 10px; font-weight: 900; color: #000; }
-        .btn-raw { background: #333; border-radius: 10px; font-weight: 900; }
-        .logo-tag { border: 1.5px solid white; padding: 0 3px; border-radius: 4px; font-size: 0.65rem; margin-right: 4px; }
-        input { background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; outline: none; }
+        .logo-us-tag { border: 1.5px solid white; padding: 0 3px; border-radius: 4px; font-size: 0.65rem; margin-right: 4px; }
+
         [x-cloak] { display: none !important; }
     </style>
 </head>
@@ -31,91 +50,50 @@
         <div class="text-2xl font-black tracking-tighter cursor-pointer uppercase" @click="view = 'home'">
             MAKS<span class="text-red-600">REPS</span>
         </div>
+        
         <div class="flex items-center gap-4">
-            <a :href="discordLink" target="_blank" class="hidden md:block red-glow-btn px-6 py-2 rounded-full font-bold text-xs uppercase tracking-widest">Discord</a>
+            <a :href="discordLink" target="_blank" class="hidden md:block red-glow-btn px-6 py-2 rounded-full font-bold text-xs uppercase tracking-widest" x-text="t.joinDiscord"></a>
             <button @click="openMenu = true" class="w-11 h-11 flex items-center justify-center bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition">
                 <i class="fa-solid fa-bars-staggered text-xl"></i>
             </button>
         </div>
     </nav>
 
-    <main class="min-h-screen pt-32 pb-20">
+    <main class="min-h-screen pt-32">
         
         <template x-if="view === 'home'">
             <section class="flex flex-col items-center justify-center text-center px-4 py-20">
-                <h1 class="text-6xl md:text-[90px] font-black leading-tight mb-6 tracking-tighter uppercase">Premium<br><span class="text-red-600">Rep</span> Tools</h1>
-                <p class="max-w-xl text-gray-500 mb-12">Wszystkie narzędzia i najlepsze znaleziska w jednym miejscu.</p>
+                <h1 class="text-6xl md:text-[90px] font-black leading-tight mb-6 tracking-tighter uppercase" x-html="t.heroTitle"></h1>
+                <p class="max-w-xl text-gray-500 text-lg mb-12 font-medium" x-text="t.heroSub"></p>
                 <div class="flex flex-col md:flex-row gap-5">
-                    <button @click="view = 'products'" class="red-glow-btn px-12 py-4 rounded-2xl font-black text-lg uppercase">Przeglądaj Finds</button>
-                    <button @click="view = 'converter'" class="bg-white/5 border border-white/10 px-12 py-4 rounded-2xl font-black text-lg hover:bg-white/10 transition uppercase">Link Converter</button>
+                    <button @click="view = 'products'" class="red-glow-btn px-12 py-4 rounded-2xl font-black text-lg uppercase" x-text="t.browseBtn"></button>
+                    <a :href="discordLink" target="_blank" class="bg-white/5 border border-white/10 px-12 py-4 rounded-2xl font-black text-lg hover:bg-white/10 transition uppercase" x-text="t.discordBtn"></a>
                 </div>
             </section>
         </template>
 
         <template x-if="view === 'products'">
-            <section class="max-w-7xl mx-auto px-6">
-                <h2 class="text-4xl font-black uppercase mb-12">Najnowsze <span class="text-red-600">Znaleziska</span></h2>
+            <section class="max-w-7xl mx-auto px-6 pb-20">
+                <h2 class="text-4xl font-black uppercase mb-12"><span x-text="t.latest"></span> <span class="text-red-600">Finds</span></h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     <template x-for="product in products">
                         <div class="menu-card p-4 rounded-[2.5rem] flex flex-col group">
                             <div class="relative aspect-square mb-6 overflow-hidden rounded-[2rem] bg-[#0c0c0c]">
                                 <img :src="product.image" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                                <div class="absolute top-4 right-4 bg-black/80 backdrop-blur-md px-4 py-2 rounded-full text-sm font-black text-red-500 border border-white/10" x-text="product.pricePLN + ' PLN'"></div>
+                                <div class="absolute top-4 right-4 bg-black/80 backdrop-blur-md px-4 py-2 rounded-full text-sm font-black text-red-500 border border-white/10" 
+                                     x-text="currency === 'PLN' ? product.pricePLN + ' PLN' : product.priceUSD + ' USD'"></div>
                             </div>
-                            <h3 class="font-bold text-lg mb-6 px-2 truncate" x-text="product.name"></h3>
+                            <h3 class="font-bold text-lg mb-6 px-2" x-text="product.name"></h3>
                             <div class="grid grid-cols-2 gap-3 px-1">
-                                <a :href="generateCustomLink('kakobuy', product.url)" target="_blank" class="btn-k py-3 flex items-center justify-center text-[10px] uppercase text-white">Kakobuy</a>
-                                <a :href="generateCustomLink('usfans', product.url)" target="_blank" class="btn-us py-3 flex items-center justify-center text-[10px] uppercase text-white">USFans</a>
+                                <a :href="product.kakobuy" target="_blank" class="btn-k py-3 flex items-center justify-center text-[10px] uppercase hover:brightness-110 transition">
+                                    <span class="italic text-sm mr-1">K</span> Kakobuy
+                                </a>
+                                <a :href="product.usfans" target="_blank" class="btn-us py-3 flex items-center justify-center text-[10px] uppercase hover:brightness-110 transition">
+                                    <span class="logo-us-tag">US</span> Fans
+                                </a>
                             </div>
                         </div>
                     </template>
-                </div>
-            </section>
-        </template>
-
-        <template x-if="view === 'converter'">
-            <section class="max-w-3xl mx-auto px-6">
-                <div class="tool-card">
-                    <h2 class="text-3xl font-black mb-2 uppercase">Link <span class="text-red-600">Converter</span></h2>
-                    <p class="text-gray-500 mb-8 font-medium">Wklej link, aby otrzymać Twoje wersje afiliacyjne.</p>
-                    <input type="text" x-model="inputUrl" @input="convertLink()" placeholder="Wklej link agenta lub sklepu..." class="w-full p-5 rounded-2xl mb-8 transition text-lg shadow-inner">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" x-show="rawUrl" x-cloak>
-                        <a :href="generateAgentLink('kakobuy')" target="_blank" class="btn-k p-5 flex justify-between items-center text-white">
-                            <span class="uppercase text-xs font-black">Kakobuy</span><i class="fa-solid fa-arrow-right"></i>
-                        </a>
-                        <a :href="generateAgentLink('usfans')" target="_blank" class="btn-us p-5 flex justify-between items-center text-white">
-                            <span class="uppercase text-xs font-black">USFans</span><i class="fa-solid fa-arrow-right"></i>
-                        </a>
-                        <a :href="generateAgentLink('acbuy')" target="_blank" class="btn-ac p-5 flex justify-between items-center text-black">
-                            <span class="uppercase text-xs font-black">ACBuy</span><i class="fa-solid fa-arrow-right"></i>
-                        </a>
-                        <div @click="copyRaw()" class="btn-raw p-5 flex justify-between items-center cursor-pointer">
-                            <span class="uppercase text-xs font-black text-gray-400">Copy RAW Link</span><i class="fa-solid fa-copy"></i>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </template>
-
-        <template x-if="view === 'calculator'">
-            <section class="max-w-3xl mx-auto px-6">
-                <div class="tool-card">
-                    <h2 class="text-3xl font-black mb-2 uppercase text-red-600">Ship Calculator</h2>
-                    <p class="text-gray-500 mb-8 font-medium italic">Szacunkowe koszty wysyłki do Polski (PLN).</p>
-                    <div class="mb-10 max-w-sm">
-                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 px-1">Waga (Gramy)</label>
-                        <input type="number" x-model="weight" placeholder="np. 4000" class="w-full p-5 rounded-2xl text-xl font-bold transition">
-                    </div>
-                    <div class="grid grid-cols-1 gap-4" x-show="weight > 0" x-cloak>
-                        <div class="bg-white/5 p-6 rounded-3xl border border-white/5 flex justify-between items-center">
-                            <span class="font-black uppercase text-xs">Kakobuy</span>
-                            <span class="text-2xl font-black text-red-500" x-text="calcShipping(weight, 'kakobuy') + ' PLN'"></span>
-                        </div>
-                        <div class="bg-white/5 p-6 rounded-3xl border border-white/5 flex justify-between items-center">
-                            <span class="font-black uppercase text-xs">USFans</span>
-                            <span class="text-2xl font-black text-blue-500" x-text="calcShipping(weight, 'usfans') + ' PLN'"></span>
-                        </div>
-                    </div>
                 </div>
             </section>
         </template>
@@ -123,51 +101,137 @@
 
     <div x-show="openMenu" class="fixed inset-0 z-[100]" x-cloak>
         <div class="absolute inset-0 bg-black/80 backdrop-blur-md" @click="openMenu = false"></div>
-        <div class="absolute inset-y-0 right-0 w-full md:w-[400px] bg-[#080808] p-8 shadow-2xl border-l border-white/5 overflow-y-auto" x-transition>
+        <div class="absolute inset-y-0 right-0 w-full md:w-[400px] bg-[#080808] p-8 shadow-2xl border-l border-white/5 overflow-y-auto"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="translate-x-full"
+             x-transition:enter-end="translate-x-0">
+            
             <div class="flex justify-between items-center mb-10">
-                <h2 class="text-2xl font-black uppercase">Menu</h2>
-                <button @click="openMenu = false" class="w-10 h-10 flex items-center justify-center bg-white/5 rounded-xl"><i class="fa-solid fa-xmark"></i></button>
+                <h2 class="text-2xl font-black uppercase tracking-tighter">Menu</h2>
+                <button @click="openMenu = false" class="w-10 h-10 flex items-center justify-center bg-white/5 rounded-xl hover:bg-red-600 transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
-            <div class="space-y-3">
-                <div @click="view = 'products'; openMenu = false" class="menu-card p-4 rounded-2xl flex items-center gap-4"><div class="icon-box"><i class="fa-solid fa-magnifying-glass"></i></div><span class="font-bold">Browse Finds</span></div>
-                <div @click="view = 'converter'; openMenu = false" class="menu-card p-4 rounded-2xl flex items-center gap-4"><div class="icon-box"><i class="fa-solid fa-link"></i></div><span class="font-bold">Link Converter</span></div>
-                <div @click="view = 'calculator'; openMenu = false" class="menu-card p-4 rounded-2xl flex items-center gap-4"><div class="icon-box"><i class="fa-solid fa-calculator"></i></div><span class="font-bold">Ship Calculator</span></div>
-                <a :href="discordLink" target="_blank" class="menu-card p-4 rounded-2xl flex items-center gap-4 border-red-600/30 bg-red-600/5"><div class="icon-box !text-red-500"><i class="fa-brands fa-discord"></i></div><span class="font-bold">Join Discord</span></a>
+
+            <div class="space-y-3 mb-12">
+                <p class="text-[10px] font-black text-gray-600 uppercase tracking-widest ml-1 mb-4" x-text="t.mainSection"></p>
+                
+                <div @click="view = 'products'; openMenu = false" class="menu-card flex items-center justify-between p-4 rounded-2xl group">
+                    <div class="flex items-center gap-4">
+                        <div class="icon-box"><i class="fa-solid fa-magnifying-glass"></i></div>
+                        <span class="font-bold">Browse Finds</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-gray-700"></i>
+                </div>
+
+                <a :href="discordLink" target="_blank" class="menu-card flex items-center justify-between p-4 rounded-2xl group border-red-600/30 bg-red-600/5">
+                    <div class="flex items-center gap-4">
+                        <div class="icon-box !text-red-500 !bg-red-500/10">
+                            <i class="fa-brands fa-discord"></i>
+                        </div>
+                        <span class="font-bold text-white">Discord</span>
+                    </div>
+                    <span class="text-[10px] font-black bg-red-600 px-2 py-1 rounded text-white uppercase" x-text="t.joinTag"></span>
+                </a>
+
+                <a :href="spreadsheetLink" target="_blank" class="menu-card flex items-center justify-between p-4 rounded-2xl group">
+                    <div class="flex items-center gap-4">
+                        <div class="icon-box"><i class="fa-solid fa-file-invoice"></i></div>
+                        <span class="font-bold">Spreadsheet</span>
+                    </div>
+                    <i class="fa-solid fa-link text-[10px] text-gray-700"></i>
+                </a>
             </div>
+
+            <div class="space-y-4">
+                <p class="text-[10px] font-black text-gray-600 uppercase tracking-widest ml-1" x-text="t.settingsSection"></p>
+                <div class="menu-card p-5 rounded-3xl space-y-6 cursor-default hover:transform-none hover:border-white/5">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-bold text-gray-400" x-text="t.langLabel"></span>
+                        <div class="flex gap-2">
+                            <img src="https://flagcdn.com/w40/pl.png" @click="setLang('pl')" 
+                                 :class="lang === 'pl' ? 'border-red-600 opacity-100' : 'border-transparent opacity-30'"
+                                 class="w-7 rounded-sm border-2 p-0.5 cursor-pointer transition">
+                            <img src="https://flagcdn.com/w40/gb.png" @click="setLang('en')" 
+                                 :class="lang === 'en' ? 'border-red-600 opacity-100' : 'border-transparent opacity-30'"
+                                 class="w-7 rounded-sm border-2 p-0.5 cursor-pointer transition">
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-bold text-gray-400" x-text="t.currencyLabel"></span>
+                        <div class="flex gap-1 bg-black p-1 rounded-lg">
+                            <button @click="currency = 'PLN'" 
+                                    :class="currency === 'PLN' ? 'bg-white/10 text-white' : 'text-gray-600'"
+                                    class="px-3 py-1 text-[10px] font-black rounded-md transition">PLN</button>
+                            <button @click="currency = 'USD'" 
+                                    :class="currency === 'USD' ? 'bg-white/10 text-white' : 'text-gray-600'"
+                                    class="px-3 py-1 text-[10px] font-black rounded-md transition">USD</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <script>
         function siteHandler() {
             return {
-                view: 'home', openMenu: false, inputUrl: '', rawUrl: '', weight: '',
+                view: 'home',
+                openMenu: false,
+                lang: 'pl',
+                currency: 'PLN',
                 discordLink: 'https://discord.gg/DTb5mkpNuH',
-                aff: { kakobuy: 'maksr3ps', usfans: 'DJPZ6T', acbuy: 'KV2WLD' },
+                spreadsheetLink: 'https://docs.google.com/spreadsheets/d/1ig6hVp-Jt3GeK__kzoqRLL99d0nI2QwmVsDM6-P1YY4/edit?usp=drivesdk',
+                t: {},
                 products: [
-                    { name: "Numeris", pricePLN: "180", image: "https://cdn.discordapp.com/attachments/1484846186153250898/1484846186652369029/pcitem1238871281-06220000019a9e195a380a23041a-unadjust_1080_1080.png", url: "https://weidian.com/item.html?itemID=7614479098" },
-                    { name: "Spodnie ADWYSD", pricePLN: "45", image: "https://file.uufinds.com/product/2026/04/15/2044313412956188673/major/2c92808a9d6ac29f019d8fffa56c38c0.webp", url: "https://weidian.com/item.html?itemID=7231456188" }
+                    {
+                        name: "Numeris Denim Shoes",
+                        pricePLN: "180",
+                        priceUSD: "45",
+                        image: "https://i.imgur.com/vHqB0uR.png",
+                        kakobuy: "https://kakobuy.com/register?inviteCode=TWOJKOD",
+                        usfans: "https://usfans.com/register?inviteCode=TWOJKOD"
+                    },
+                    {
+                        name: "Jordan 4 Retro Black Cat",
+                        pricePLN: "250",
+                        priceUSD: "62",
+                        image: "https://images.stockx.com/360/Air-Jordan-4-Retro-Black-Cat-2020/Images/Air-Jordan-4-Retro-Black-Cat-2020/Lv2/img01.jpg?auto=compress&w=480",
+                        kakobuy: "#",
+                        usfans: "#"
+                    }
                 ],
-                convertLink() {
-                    let val = this.inputUrl.trim();
-                    if (!val) { this.rawUrl = ''; return; }
-                    if (val.includes('url=')) {
-                        let params = new URLSearchParams(val.split('?')[1]);
-                        this.rawUrl = decodeURIComponent(params.get('url'));
-                    } else { this.rawUrl = val; }
+                translations: {
+                    pl: {
+                        heroTitle: 'The Ultimate<br><span class="text-red-600">Rep</span> Community',
+                        heroSub: 'Najlepsze znaleziska, sprawdzeni agenci i największa społeczność. Dołącz do Maks Reps już teraz.',
+                        browseBtn: 'Przeglądaj Produkty',
+                        discordBtn: 'Discord',
+                        joinDiscord: 'Dołącz do nas',
+                        latest: 'Najnowsze',
+                        mainSection: 'Główne',
+                        settingsSection: 'Ustawienia',
+                        langLabel: 'Język',
+                        currencyLabel: 'Waluta',
+                        joinTag: 'Dołącz'
+                    },
+                    en: {
+                        heroTitle: 'The Ultimate<br><span class="text-red-600">Rep</span> Community',
+                        heroSub: 'The best finds, trusted agents, and the biggest community. Join Maks Reps right now.',
+                        browseBtn: 'Browse Products',
+                        discordBtn: 'Discord',
+                        joinDiscord: 'Join Us',
+                        latest: 'Latest',
+                        mainSection: 'Main',
+                        settingsSection: 'Settings',
+                        langLabel: 'Language',
+                        currencyLabel: 'Currency',
+                        joinTag: 'Join'
+                    }
                 },
-                generateAgentLink(agent) { return this.generateCustomLink(agent, this.rawUrl); },
-                generateCustomLink(agent, url) {
-                    if (!url) return '#';
-                    let encoded = encodeURIComponent(url);
-                    if (agent === 'kakobuy') return `https://www.kakobuy.com/item/details?url=${encoded}&affcode=${this.aff.kakobuy}`;
-                    if (agent === 'usfans') return `https://www.usfans.com/product/search?url=${encoded}&ref=${this.aff.usfans}`;
-                    if (agent === 'acbuy') return `https://www.acbuy.com/product-detail?url=${encoded}&ref=${this.aff.acbuy}`;
-                },
-                calcShipping(g, agent) {
-                    let kg = g / 1000;
-                    return agent === 'kakobuy' ? Math.round(45 + (kg * 62)) : Math.round(42 + (kg * 59));
-                },
-                copyRaw() { navigator.clipboard.writeText(this.rawUrl); alert('Skopiowano!'); }
+                init() { this.t = this.translations[this.lang]; },
+                setLang(l) { this.lang = l; this.t = this.translations[l]; }
             }
         }
     </script>
