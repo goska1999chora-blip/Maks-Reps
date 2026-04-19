@@ -9,17 +9,34 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #050505; color: white; overflow-x: hidden; }
-        .red-glow-btn { background-color: #ff0000; box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); transition: all 0.3s ease; }
-        .red-glow-btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(255, 0, 0, 0.6); }
-        .menu-card { background: #111111; border: 1px solid #1a1a1a; transition: all 0.2s ease; cursor: pointer; }
-        .menu-card:hover { background: #161616; border-color: #333; transform: translateX(5px); }
-        .tool-card { background: #111111; border: 1px solid #1a1a1a; border-radius: 24px; padding: 2.5rem; }
-        .icon-box { background: #1a1a1a; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 10px; color: #666; }
-        .btn-k { background: #ff5c5c; border-radius: 10px; font-weight: 900; color: white; }
-        .btn-us { background: #3b82f6; border-radius: 10px; font-weight: 900; color: white; }
-        .btn-ac { background: #00d1b2; border-radius: 10px; font-weight: 900; color: #000; }
-        input { background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; outline: none; }
+        body { font-family: 'Inter', sans-serif; background-color: #000000; color: white; overflow-x: hidden; }
+        
+        /* Strona Główna (image_1.png) */
+        .hero-title { font-size: 48px; line-height: 1.1; font-weight: 900; text-transform: uppercase; letter-spacing: -2px; }
+        @media (min-width: 768px) { .hero-title { font-size: 80px; } }
+        .hero-subtitle { color: #888; max-w: 600px; margin: 0 auto; font-weight: 500; }
+        
+        /* Przyciski Główne */
+        .btn-main-red { background-color: #ff0000; color: white; border-radius: 12px; font-weight: 800; text-transform: uppercase; font-size: 14px; transition: 0.2s; }
+        .btn-main-black { background-color: #111111; color: white; border: 1px solid #222; border-radius: 12px; font-weight: 800; text-transform: uppercase; font-size: 14px; transition: 0.2s; }
+
+        /* Menu (image_0.png) */
+        .menu-sidebar { background-color: #080808; border-l: 1px solid #111; }
+        .menu-tile { background-color: #111111; border: 1px solid #1a1a1a; border-radius: 16px; padding: 16px; transition: 0.2s; cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+        .menu-tile:hover { background-color: #161616; border-color: #333; }
+        .menu-icon-box { background-color: #1a1a1a; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 12px; color: #666; font-size: 18px; }
+        .menu-tile-text { font-weight: 700; font-size: 15px; color: white; }
+
+        /* Przyciski Agentów */
+        .agent-btn { border-radius: 10px; font-weight: 900; text-transform: uppercase; font-size: 12px; transition: 0.2s; padding: 16px; width: 100%; display: flex; justify-content: space-between; align-items: center; }
+        .btn-kako { background-color: #ff5c5c; color: white; }
+        .btn-usf { background-color: #3b82f6; color: white; }
+        .btn-acb { background-color: #00d1b2; color: #000; }
+        
+        .raw-box { background-color: #111; border: 1px solid #1a1a1a; border-radius: 12px; padding: 14px; font-family: monospace; font-size: 11px; color: #ff5c5c; }
+        .flag-icon { width: 24px; cursor: pointer; opacity: 0.5; transition: 0.2s; }
+        .flag-icon.active { opacity: 1; border: 2px solid #ff0000; border-radius: 2px; }
+
         [x-cloak] { display: none !important; }
         .animate-fade { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -31,79 +48,53 @@
         <div class="text-2xl font-black tracking-tighter cursor-pointer uppercase" @click="view = 'home'">
             MAKS<span class="text-red-600">REPS</span>
         </div>
-        <button @click="openMenu = true" class="w-11 h-11 flex items-center justify-center bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition text-white">
+        <button @click="openMenu = true" class="w-10 h-10 flex items-center justify-center bg-white/5 rounded-xl text-white">
             <i class="fa-solid fa-bars-staggered text-xl"></i>
         </button>
     </nav>
 
-    <main class="min-h-screen pt-32 pb-20">
+    <main class="min-h-screen pt-32 pb-20 px-6">
         
         <template x-if="view === 'home'">
-            <section class="flex flex-col items-center justify-center text-center px-4 py-20 animate-fade">
-                <h1 class="text-6xl md:text-[90px] font-black leading-tight mb-6 tracking-tighter uppercase" x-html="t.heroTitle"></h1>
-                <div class="flex flex-col md:flex-row gap-5 mt-8">
-                    <button @click="view = 'products'" class="red-glow-btn px-12 py-4 rounded-2xl font-black text-lg uppercase" x-text="t.browseBtn"></button>
-                    <button @click="view = 'converter'" class="bg-white/5 border border-white/10 px-12 py-4 rounded-2xl font-black text-lg hover:bg-white/10 transition uppercase">Link Converter</button>
-                </div>
-            </section>
-        </template>
-
-        <template x-if="view === 'products'">
-            <section class="max-w-7xl mx-auto px-6 animate-fade">
-                <h2 class="text-4xl font-black uppercase mb-12"><span x-text="t.latest"></span> <span class="text-red-600">Finds</span></h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <template x-for="product in products">
-                        <div class="menu-card p-4 rounded-[2.5rem] flex flex-col group">
-                            <div class="relative aspect-square mb-6 overflow-hidden rounded-[2rem] bg-[#0c0c0c]">
-                                <img :src="product.image" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                                <div class="absolute top-4 right-4 bg-black/80 backdrop-blur-md px-4 py-2 rounded-full text-sm font-black text-red-500 border border-white/10" 
-                                     x-text="currency === 'PLN' ? product.pricePLN + ' PLN' : product.priceUSD + ' USD'"></div>
-                            </div>
-                            <h3 class="font-bold text-lg mb-6 px-2 truncate" x-text="product.name"></h3>
-                            <div class="grid grid-cols-2 gap-3 px-1">
-                                <a :href="processUrl(product.url).kako" target="_blank" class="btn-k py-3 flex items-center justify-center text-[10px] uppercase">Kakobuy</a>
-                                <a :href="processUrl(product.url).usf" target="_blank" class="btn-us py-3 flex items-center justify-center text-[10px] uppercase">USFans</a>
-                            </div>
-                        </div>
-                    </template>
+            <section class="flex flex-col items-center justify-center text-center py-20 animate-fade">
+                <h1 class="hero-title mb-8">
+                    THE<br>ULTIMATE<br><span class="text-red-600">REP</span><br>COMMUNITY
+                </h1>
+                <p class="hero-subtitle mb-16 text-lg" x-text="t.heroSub"></p>
+                <div class="flex flex-col md:flex-row gap-5 w-full max-w-sm md:max-w-none justify-center">
+                    <button @click="view = 'products'" class="btn-main-red px-12 py-5 w-full md:w-auto">PRZEGLĄDAJ PRODUKTY</button>
+                    <button @click="window.open(discordLink)" class="btn-main-black px-12 py-5 w-full md:w-auto">Discord</button>
                 </div>
             </section>
         </template>
 
         <template x-if="view === 'converter'">
-            <section class="max-w-3xl mx-auto px-6 animate-fade">
-                <div class="tool-card">
-                    <div class="flex items-center gap-3 mb-2">
-                        <i class="fa-solid fa-robot text-red-600 text-2xl"></i>
-                        <h2 class="text-3xl font-black uppercase">Bot <span class="text-red-600">Converter</span></h2>
+            <section class="max-w-3xl mx-auto animate-fade">
+                <div class="p-8 bg-[#080808] border border-white/5 rounded-3xl">
+                    <div class="flex items-center gap-4 mb-2">
+                        <i class="fa-solid fa-robot text-red-600 text-3xl"></i>
+                        <h2 class="text-3xl font-black uppercase tracking-tighter">Bot <span class="text-red-600">Converter</span></h2>
                     </div>
-                    <p class="text-gray-500 mb-8 font-medium">Wklej link Taobao/Weidian/1688 – resztę zrobię za Ciebie.</p>
+                    <p class="text-gray-500 mb-8 font-medium">Wklej link, aby otrzymać wersję afiliacyjną dla 3 agentów.</p>
                     
-                    <input type="text" x-model="inputUrl" @input="convertLink()" placeholder="Wklej link tutaj..." class="w-full p-5 rounded-2xl mb-8 transition text-lg border border-white/10">
+                    <input type="text" x-model="inputUrl" @input="convertLink()" placeholder="Wklej link Taobao/Weidian/1688..." class="w-full p-6 rounded-2xl mb-8 transition text-lg border border-white/10 bg-white/5 outline-none focus:border-red-600/50">
                     
-                    <div class="space-y-4" x-show="botResults" x-cloak>
-                        <div class="p-4 bg-white/5 rounded-xl border-l-4 border-red-600 mb-6">
-                            <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest">Wykryto produkt:</p>
-                            <p class="text-sm font-bold truncate text-white" x-text="botResults.cleanUrl"></p>
-                        </div>
+                    <div class="space-y-4" x-show="botResult" x-cloak>
+                        <div class="raw-box truncate" x-text="botResult.cleanUrl"></div>
 
                         <div class="grid grid-cols-1 gap-3">
-                            <a :href="botResults.kako" target="_blank" class="btn-k p-5 flex justify-between items-center group">
-                                <span class="uppercase font-black text-sm tracking-widest">✨ Kup na Kakobuy</span>
-                                <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition"></i>
+                            <a :href="botResult.kako" target="_blank" class="agent-btn btn-kako group">
+                                <span class="tracking-widest">KUP NA KAKOBUY</span>
+                                <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
                             </a>
-                            <a :href="botResults.usf" target="_blank" class="btn-us p-5 flex justify-between items-center group">
-                                <span class="uppercase font-black text-sm tracking-widest">🚀 Kup na USFans</span>
-                                <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition"></i>
+                            <a :href="botResult.usf" target="_blank" class="agent-btn btn-usf group">
+                                <span class="tracking-widest">KUP NA USFANS</span>
+                                <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
                             </a>
-                            <a :href="botResults.acb" target="_blank" class="btn-ac p-5 flex justify-between items-center group">
-                                <span class="uppercase font-black text-sm tracking-widest">📦 Kup na ACBuy</span>
-                                <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition"></i>
+                            <a :href="botResult.acb" target="_blank" class="agent-btn btn-acb group">
+                                <span class="tracking-widest">KUP NA ACBUY</span>
+                                <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
                             </a>
-                        </div>
-                        
-                        <div @click="copyRaw(botResults.cleanUrl)" class="w-full py-4 bg-white/5 rounded-xl border border-white/10 flex justify-center items-center gap-2 cursor-pointer hover:bg-white/10 transition text-gray-400 font-bold text-xs uppercase">
-                            <i class="fa-solid fa-copy"></i> Skopiuj czysty link (RAW)
                         </div>
                     </div>
                 </div>
@@ -111,28 +102,27 @@
         </template>
 
         <template x-if="view === 'qc'">
-            <section class="max-w-3xl mx-auto px-6 animate-fade">
-                <div class="tool-card text-center">
-                    <h2 class="text-3xl font-black mb-2 uppercase text-white">Quality <span class="text-red-600">Checks</span></h2>
-                    <p class="text-gray-500 mb-8">Podejrzyj zdjęcia z magazynu (QC).</p>
-                    <input type="text" x-model="qcUrl" placeholder="Wklej link Weidian/Taobao/1688..." class="w-full p-5 rounded-2xl mb-8 text-lg">
-                    <a :href="'https://www.kakobuy.com/index/item/quality_inspection?url=' + encodeURIComponent(qcUrl)" target="_blank" class="bg-white text-black p-5 rounded-xl flex justify-center items-center w-full uppercase font-black" x-show="qcUrl">Sprawdź QC na Kakobuy</a>
+            <section class="max-w-3xl mx-auto animate-fade text-center">
+                <div class="p-10 bg-[#080808] border border-white/5 rounded-3xl">
+                    <i class="fa-solid fa-camera text-red-600 text-4xl mb-4"></i>
+                    <h2 class="text-3xl font-black uppercase mb-8">Quality <span class="text-red-600">Checks</span></h2>
+                    <input type="text" x-model="qcUrl" placeholder="Wklej link do przedmiotu..." class="w-full p-6 rounded-2xl mb-8 bg-white/5 border border-white/10 outline-none">
+                    <a :href="'https://www.kakobuy.com/index/item/quality_inspection?url=' + encodeURIComponent(qcUrl)" target="_blank" class="btn-main-red py-5 px-10 rounded-xl inline-block w-full" x-show="qcUrl">SPRAWDŹ ZDJĘCIA QC</a>
                 </div>
             </section>
         </template>
 
-        <template x-if="view === 'calculator'">
-            <section class="max-w-3xl mx-auto px-6 animate-fade">
-                <div class="tool-card">
-                    <h2 class="text-3xl font-black mb-6 uppercase text-red-600">Ship Calculator</h2>
-                    <div class="mb-10 max-w-sm">
-                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 px-1">Waga (Gramy)</label>
-                        <input type="number" x-model="weight" placeholder="4000" class="w-full p-5 rounded-2xl text-xl font-bold transition">
-                    </div>
-                    <div class="grid grid-cols-1 gap-4" x-show="weight > 0" x-cloak>
-                        <div class="bg-white/5 p-6 rounded-3xl border border-white/5 flex justify-between items-center text-white"><span class="font-black uppercase text-xs">Kakobuy</span><span class="text-2xl font-black text-red-500" x-text="calcShipping(weight, 'kakobuy') + ' ' + currency"></span></div>
-                        <div class="bg-white/5 p-6 rounded-3xl border border-white/5 flex justify-between items-center text-white"><span class="font-black uppercase text-xs">USFans</span><span class="text-2xl font-black text-blue-500" x-text="calcShipping(weight, 'usfans') + ' ' + currency"></span></div>
-                    </div>
+        <template x-if="view === 'products'">
+            <section class="max-w-7xl mx-auto animate-fade">
+                <h2 class="text-4xl font-black uppercase mb-12">Najnowsze <span class="text-red-600">Finds</span></h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <template x-for="p in products">
+                        <div class="bg-[#111] p-4 rounded-[2rem] border border-white/5">
+                            <img :src="p.image" class="w-full aspect-square object-cover rounded-2xl mb-4">
+                            <h3 class="font-bold mb-4" x-text="p.name"></h3>
+                            <button @click="inputUrl = p.url; convertLink(); view = 'converter'" class="btn-main-red w-full py-3 text-xs">POBIERZ LINKI</button>
+                        </div>
+                    </template>
                 </div>
             </section>
         </template>
@@ -140,25 +130,62 @@
 
     <div x-show="openMenu" class="fixed inset-0 z-[100]" x-cloak>
         <div class="absolute inset-0 bg-black/80 backdrop-blur-md" @click="openMenu = false"></div>
-        <div class="absolute inset-y-0 right-0 w-full md:w-[400px] bg-[#080808] p-8 shadow-2xl border-l border-white/5 overflow-y-auto" x-transition>
-            <div class="flex justify-between items-center mb-10 text-white">
-                <h2 class="text-2xl font-black uppercase tracking-tighter">Menu</h2>
+        <div class="absolute inset-y-0 right-0 w-full md:w-[400px] menu-sidebar p-8 shadow-2xl overflow-y-auto" x-transition>
+            
+            <div class="flex justify-between items-center mb-12 text-white">
+                <h2 class="text-3xl font-black uppercase">MENU</h2>
                 <button @click="openMenu = false" class="w-10 h-10 bg-white/5 rounded-xl"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <div class="space-y-3 mb-10 text-white">
-                <div @click="view = 'products'; openMenu = false" class="menu-card p-4 rounded-2xl flex items-center gap-4"><div class="icon-box"><i class="fa-solid fa-magnifying-glass"></i></div><span class="font-bold uppercase text-xs">Browse Finds</span></div>
-                <div @click="view = 'converter'; openMenu = false" class="menu-card p-4 rounded-2xl flex items-center gap-4"><div class="icon-box"><i class="fa-solid fa-robot"></i></div><span class="font-bold uppercase text-xs">Link Converter</span></div>
-                <div @click="view = 'qc'; openMenu = false" class="menu-card p-4 rounded-2xl flex items-center gap-4"><div class="icon-box"><i class="fa-solid fa-camera"></i></div><span class="font-bold uppercase text-xs">Quality Checks</span></div>
-                <div @click="view = 'calculator'; openMenu = false" class="menu-card p-4 rounded-2xl flex items-center gap-4"><div class="icon-box"><i class="fa-solid fa-calculator"></i></div><span class="font-bold uppercase text-xs">Ship Calculator</span></div>
-                <a :href="discordLink" target="_blank" class="menu-card p-4 rounded-2xl flex items-center gap-4 border-red-600/30 bg-red-600/5 text-white"><div class="icon-box !text-red-500"><i class="fa-brands fa-discord"></i></div><span class="font-bold uppercase text-xs">Discord</span></a>
+            <div class="mb-10">
+                <p class="text-[10px] font-black text-gray-500 tracking-widest mb-4">GŁÓWNE</p>
+                <div class="space-y-4">
+                    <div @click="view = 'products'; openMenu = false" class="menu-tile">
+                        <div class="flex items-center gap-4">
+                            <div class="menu-icon-box"><i class="fa-solid fa-magnifying-glass"></i></div>
+                            <span class="menu-tile-text">Browse Finds</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-gray-700 text-xs"></i>
+                    </div>
+                    <div class="menu-tile" @click="window.open(discordLink)">
+                        <div class="flex items-center gap-4">
+                            <div class="menu-icon-box !bg-red-600/10 !text-red-600"><i class="fa-brands fa-discord"></i></div>
+                            <span class="menu-tile-text">Discord</span>
+                        </div>
+                        <span class="bg-red-600 text-[10px] font-black px-3 py-1.5 rounded-md">DOŁĄCZ</span>
+                    </div>
+                    <div @click="view = 'converter'; openMenu = false" class="menu-tile">
+                        <div class="flex items-center gap-4">
+                            <div class="menu-icon-box"><i class="fa-solid fa-robot"></i></div>
+                            <span class="menu-tile-text">Link Converter</span>
+                        </div>
+                    </div>
+                    <div @click="view = 'qc'; openMenu = false" class="menu-tile">
+                        <div class="flex items-center gap-4">
+                            <div class="menu-icon-box"><i class="fa-solid fa-camera"></i></div>
+                            <span class="menu-tile-text">Quality Checks</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="border-t border-white/5 pt-8 text-white">
-                <h3 class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-4">Ustawienia</h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <button @click="toggleLang()" class="bg-white/5 p-4 rounded-xl text-xs font-bold border border-white/10 uppercase hover:bg-white/10" x-text="'Język: ' + lang"></button>
-                    <button @click="toggleCurrency()" class="bg-white/5 p-4 rounded-xl text-xs font-bold border border-white/10 uppercase hover:bg-white/10" x-text="'Waluta: ' + currency"></button>
+            <div class="border-t border-white/5 pt-8">
+                <p class="text-[10px] font-black text-gray-500 tracking-widest mb-4">USTAWIENIA</p>
+                <div class="bg-[#111] p-6 rounded-2xl space-y-6">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-400 font-bold text-sm">Język</span>
+                        <div class="flex gap-3">
+                            <img src="https://flagcdn.com/w40/pl.png" @click="lang = 'PL'" class="flag-icon" :class="lang === 'PL' && 'active'">
+                            <img src="https://flagcdn.com/w40/gb.png" @click="lang = 'EN'" class="flag-icon" :class="lang === 'EN' && 'active'">
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-400 font-bold text-sm">Waluta</span>
+                        <div class="flex bg-black p-1 rounded-lg border border-white/5 text-[10px] font-black">
+                            <button @click="currency = 'PLN'" class="px-4 py-2 rounded-md" :class="currency === 'PLN' ? 'bg-red-600' : 'text-gray-600'">PLN</button>
+                            <button @click="currency = 'USD'" class="px-4 py-2 rounded-md" :class="currency === 'USD' ? 'bg-red-600' : 'text-gray-600'">USD</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -167,82 +194,45 @@
     <script>
         function siteHandler() {
             return {
-                view: 'home', openMenu: false, lang: 'PL', currency: 'PLN', inputUrl: '', botResults: null, weight: '', qcUrl: '',
+                view: 'home', openMenu: false, lang: 'PL', currency: 'PLN', inputUrl: '', botResult: null, qcUrl: '',
                 discordLink: 'https://discord.gg/DTb5mkpNuH',
                 aff: { kakobuy: 'maksr3ps', usfans: 'DJPZ6T', acbuy: 'KV2WLD' },
-                t: {},
-                translations: {
-                    PL: { heroTitle: 'The Ultimate<br><span class="text-red-600">Rep</span> Tool', browseBtn: 'Przeglądaj Sklep', latest: 'Najnowsze' },
-                    EN: { heroTitle: 'The Ultimate<br><span class="text-red-600">Rep</span> Tool', browseBtn: 'Browse Store', latest: 'Latest' }
+                t: {
+                    heroSub: 'Najlepsze znaleziska, sprawdzeni agenci i największa społeczność. Dołącz do Maks Reps już teraz.'
                 },
                 products: [
-                    { name: "Trapstar Jacket", pricePLN: "180", priceUSD: "45", image: "https://photos.pandalabs.io/jacket-trapstar-black.jpg", url: "https://weidian.com/item.html?itemID=5279434461" },
-                    { name: "Spodnie ADWYSD", pricePLN: "45", priceUSD: "12", image: "https://photos.pandalabs.io/aj4-black-cat.jpg", url: "https://weidian.com/item.html?itemID=7231456188" }
+                    { name: "Trapstar Jacket", image: "https://photos.pandalabs.io/jacket-trapstar-black.jpg", url: "https://weidian.com/item.html?itemID=5279434461" }
                 ],
-                init() { this.t = this.translations[this.lang]; },
-                toggleLang() { this.lang = this.lang === 'PL' ? 'EN' : 'PL'; this.t = this.translations[this.lang]; },
-                toggleCurrency() { this.currency = this.currency === 'PLN' ? 'USD' : 'PLN'; },
                 
-                // LOGIKA BOTA - Wyciąganie ID i tworzenie linków
-                processUrl(url) {
-                    if (!url) return null;
-                    let clean = url.trim().split('?')[0];
-                    let id = "";
-                    let usfType = "1"; // Default for Taobao/Weidian
-                    let acSource = "TB"; 
-
-                    // Wykrywanie Taobao / Tmall
-                    if (url.includes("taobao.com") || url.includes("tmall.com")) {
-                        let match = url.match(/id=(\d+)/);
-                        if (match) {
-                            id = match[1];
-                            acSource = "TB";
-                            clean = `https://item.taobao.com/item.htm?id=${id}`;
-                        }
-                    } 
-                    // Wykrywanie Weidian
-                    else if (url.includes("weidian.com")) {
-                        let match = url.match(/(?:itemid|item_id|itemID=)(\d+)/);
-                        if (match) {
-                            id = match[1];
-                            acSource = "WD";
-                            clean = `https://weidian.com/item.html?itemID=${id}`;
-                        }
-                    }
-                    // Wykrywanie 1688
-                    else if (url.includes("1688.com")) {
-                        let match = url.match(/(?:offer\/|id=)(\d+)/);
-                        if (match) {
-                            id = match[1];
-                            usfType = "2";
-                            acSource = "1688";
-                            clean = `https://detail.1688.com/offer/${id}.html`;
-                        }
-                    }
-
-                    if (!id) return { cleanUrl: url, kako: '#', usf: '#', acb: '#' };
-
-                    return {
-                        cleanUrl: clean,
-                        kako: `https://www.kakobuy.com/item/details?url=${encodeURIComponent(clean)}&affcode=${this.aff.kakobuy}`,
-                        usf: `https://www.usfans.com/product/${usfType}/${id}?inviteCode=${this.aff.usfans}`,
-                        acb: `https://m.acbuy.com/product?id=${id}&source=${acSource}&inviteCode=${this.aff.acbuy}`
-                    };
-                },
-
+                // LOGIKA BOTA
                 convertLink() {
-                    let res = this.processUrl(this.inputUrl);
-                    this.botResults = res && res.kako !== '#' ? res : null;
-                },
+                    let url = this.inputUrl.trim();
+                    if (!url) { this.botResult = null; return; }
 
-                calcShipping(g, agent) {
-                    let rate = this.currency === 'PLN' ? 1 : 0.25;
-                    let base = agent === 'kakobuy' ? (45 + (g/1000 * 62)) : (42 + (g/1000 * 59));
-                    return Math.round(base * rate);
-                },
-                copyRaw(text) { 
-                    navigator.clipboard.writeText(text); 
-                    alert('Skopiowano czysty link!'); 
+                    let id = "";
+                    let usfType = "1";
+                    let acSource = "TB";
+                    let clean = url;
+
+                    if (url.includes("taobao.com") || url.includes("tmall.com")) {
+                        let m = url.match(/id=(\d+)/);
+                        if (m) { id = m[1]; acSource = "TB"; clean = `https://item.taobao.com/item.htm?id=${id}`; }
+                    } else if (url.includes("weidian.com")) {
+                        let m = url.match(/(?:itemID=)(\d+)/);
+                        if (m) { id = m[1]; acSource = "WD"; clean = `https://weidian.com/item.html?itemID=${id}`; }
+                    } else if (url.includes("1688.com")) {
+                        let m = url.match(/(?:offer\/|id=)(\d+)/);
+                        if (m) { id = m[1]; usfType = "2"; acSource = "1688"; clean = `https://detail.1688.com/offer/${id}.html`; }
+                    }
+
+                    if (id) {
+                        this.botResult = {
+                            cleanUrl: clean,
+                            kako: `https://www.kakobuy.com/item/details?url=${encodeURIComponent(clean)}&affcode=${this.aff.kakobuy}`,
+                            usf: `https://www.usfans.com/product/${usfType}/${id}?inviteCode=${this.aff.usfans}`,
+                            acb: `https://m.acbuy.com/product?id=${id}&source=${acSource}&inviteCode=${this.aff.acbuy}`
+                        };
+                    }
                 }
             }
         }
