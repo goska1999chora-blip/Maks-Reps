@@ -244,20 +244,7 @@
                     pl: { heroSub: 'Najlepsze znaleziska i największa społeczność Reps w Polsce.', browseBtn: 'Przeglądaj Produkty', discordBtn: 'Discord', qcPlace: 'Wklej link Weidian/Taobao/1688...' },
                     en: { heroSub: 'Best finds and the largest Reps community in Poland.', browseBtn: 'Browse Products', discordBtn: 'Discord', qcPlace: 'Paste item link...' }
                 },
-                init() { 
-                    this.setLang('pl'); 
-
-                    const params = new URLSearchParams(window.location.search);
-                    const urlParam = params.get('url');
-
-                    if (urlParam) {
-                        this.view = 'qcfinder';
-                        this.qcInputUrl = decodeURIComponent(urlParam);
-                        setTimeout(() => {
-                            this.fetchQC();
-                        }, 600);
-                    }
-                },
+                init() { this.setLang('pl'); },
                 setLang(l) { this.lang = l; this.t = this.translations[l]; },
                 checkAdmin() { if(this.adminPass === 'maksadmin2024') this.isAdmin = true; },
                 
@@ -284,32 +271,23 @@
                     this.qcLoading = true;
                     this.qcPhotos = [];
 
-                    let finalUrl = this.qcInputUrl.trim();
-                    // Jeśli link zawiera 'url=', wyciągamy czysty link do produktu
-                    if (finalUrl.includes('url=')) {
-                        try {
-                            const urlObj = new URL(finalUrl);
-                            const params = new URLSearchParams(urlObj.search);
-                            if (params.has('url')) finalUrl = params.get('url');
-                        } catch(e) { console.error("URL Parsing error"); }
-                    }
-
                     try {
-                        const res = await fetch(`https://api.xms4192.workers.dev/qc?url=${encodeURIComponent(finalUrl)}`);
+                        const res = await fetch(`https://api.xms4192.workers.dev/qc?url=${encodeURIComponent(this.qcInputUrl)}`);
                         const data = await res.json();
                         
                         let results = [];
                         const deepSearch = (obj) => {
-                            if (!obj) return;
                             for (let key in obj) {
-                                let val = obj[key];
-                                if (typeof val === 'string') {
-                                    if ((val.includes('http') || val.startsWith('//')) && val.match(/\.(jpg|jpeg|png|webp)/i)) {
-                                        let link = val.startsWith('//') ? 'https:' + val : val;
-                                        if (link.length > 30) results.push(link);
+                                if (typeof obj[key] === 'string' && (obj[key].includes('http') || obj[key].startsWith('//'))) {
+                                    let link = obj[key];
+                                    // POPRAWKA: Jeśli link zaczyna się od // dodaj https:
+                                    if (link.startsWith('//')) link = 'https:' + link;
+                                    
+                                    if (link.match(/\.(jpg|jpeg|png|webp)/i)) {
+                                        results.push(link);
                                     }
-                                } else if (typeof val === 'object' && val !== null) {
-                                    deepSearch(val);
+                                } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+                                    deepSearch(obj[key]);
                                 }
                             }
                         };
