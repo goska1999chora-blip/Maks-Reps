@@ -14,7 +14,7 @@
         .hero-title { font-size: 48px; line-height: 1.1; font-weight: 900; text-transform: uppercase; letter-spacing: -2px; }
         @media (min-width: 768px) { .hero-title { font-size: 80px; } }
         
-        .btn-main-red { background-color: #ff0000; box-shadow: 0 0 20px rgba(255, 0, 0, 0.3); color: white; border-radius: 12px; font-weight: 800; text-transform: uppercase; transition: 0.2s; cursor: pointer; border: none; }
+        .btn-main-red { background-color: #ff0000; color: white; border-radius: 12px; font-weight: 800; text-transform: uppercase; transition: 0.2s; cursor: pointer; border: none; }
         .btn-main-black { background-color: #111111; color: white; border: 1px solid #222; border-radius: 12px; font-weight: 800; text-transform: uppercase; transition: 0.2s; cursor: pointer; }
         .btn-main-red:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(255, 0, 0, 0.5); }
 
@@ -27,8 +27,12 @@
         .btn-kako { background-color: #ff5c5c; color: white; }
         .btn-usf { background-color: #3b82f6; color: white; }
         
-        .flag-icon { width: 28px; cursor: pointer; opacity: 0.3; transition: 0.2s; border: 2px solid transparent; padding: 1px; }
-        .flag-icon.active { opacity: 1; border-color: #ff0000; border-radius: 4px; }
+        .flag-icon { width: 24px; height: 18px; cursor: pointer; opacity: 0.4; transition: 0.2s; }
+        .flag-icon.active { opacity: 1; transform: scale(1.1); }
+
+        .currency-toggle { background: #1a1a1a; border-radius: 10px; display: flex; padding: 4px; }
+        .currency-btn { padding: 6px 16px; border-radius: 8px; font-size: 12px; font-weight: 800; transition: 0.2s; }
+        .currency-btn.active { background: #ff0000; color: white; }
 
         [x-cloak] { display: none !important; }
         .animate-fade { animation: fadeIn 0.4s ease-out; }
@@ -37,23 +41,17 @@
         .calc-input { background: #111; border: 1px solid #222; border-radius: 12px; padding: 12px; width: 100%; outline: none; transition: 0.2s; color: white;}
         .calc-input:focus { border-color: #ff0000; }
         
-        .qc-image-card { border-radius: 12px; overflow: hidden; border: 1px solid #222; transition: 0.3s; cursor: pointer; background: #0a0a0a; }
-        .qc-image-card:hover { border-color: #ff0000; transform: scale(1.02); }
-        .qc-image-card img { width: 100%; height: auto; display: block; }
+        .qc-image-card { border-radius: 12px; overflow: hidden; border: 1px solid #222; transition: 0.3s; cursor: pointer; background: #0a0a0a; height: 220px; }
+        .qc-image-card img { width: 100%; height: 100%; object-fit: cover; }
         
-        .spinner { border: 4px solid rgba(255,0,0,0.1); border-left-color: #ff0000; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 40px auto;}
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* Styl Lightboxa */
-        .lightbox-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 200; display: flex; align-items: center; justify-content: center; backdrop-blur: 10px; cursor: zoom-out; }
-        .lightbox-img { max-width: 90%; max-height: 90%; border-radius: 12px; box-shadow: 0 0 50px rgba(0,0,0,0.5); cursor: default; }
+        .lightbox-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        .lightbox-img { max-width: 90%; max-height: 90%; border-radius: 8px; }
     </style>
 </head>
 <body x-data="siteHandler()">
 
-    <div x-show="selectedPhoto" class="lightbox-overlay animate-fade" @click="selectedPhoto = null" x-cloak>
-        <button class="absolute top-10 right-10 text-white text-3xl hover:text-red-600 transition"><i class="fa-solid fa-xmark"></i></button>
-        <img :src="selectedPhoto" class="lightbox-img" @click.stop>
+    <div x-show="selectedPhoto" class="lightbox-overlay" @click="selectedPhoto = null" x-cloak>
+        <img :src="selectedPhoto" class="lightbox-img">
     </div>
 
     <nav class="fixed w-full z-50 px-6 py-5 flex justify-between items-center bg-black/80 backdrop-blur-xl border-b border-white/5">
@@ -66,7 +64,6 @@
     </nav>
 
     <main class="min-h-screen pt-32 pb-20 px-6">
-        
         <template x-if="view === 'home'">
             <section class="flex flex-col items-center justify-center text-center py-20 animate-fade">
                 <h1 class="hero-title mb-8" x-html="t.heroTitle"></h1>
@@ -90,11 +87,11 @@
                             <div class="p-6">
                                 <div class="flex justify-between items-start mb-4">
                                     <h3 class="font-bold text-xl uppercase leading-tight" x-text="item.title"></h3>
-                                    <span class="text-red-600 font-black" x-text="item.price"></span>
+                                    <span class="text-red-600 font-black" x-text="item.price + ' ' + (currency === 'USD' ? '$' : 'CNY')"></span>
                                 </div>
                                 <div class="flex gap-2">
-                                    <button @click="openQCWithLink(item.link)" class="bg-white/5 hover:bg-white/10 text-xs font-black p-3 rounded-xl flex-grow uppercase">QC Check</button>
-                                    <a :href="item.link" target="_blank" class="btn-main-red text-xs font-black p-3 rounded-xl flex-grow text-center">Buy Now</a>
+                                    <button @click="openQCWithLink(item.link)" class="bg-white/5 hover:bg-white/10 text-xs font-black p-3 rounded-xl flex-grow uppercase">QC Photos</button>
+                                    <a :href="item.link" target="_blank" class="btn-main-red text-xs font-black p-3 rounded-xl flex-grow text-center">Get Link</a>
                                 </div>
                             </div>
                         </div>
@@ -103,56 +100,23 @@
             </section>
         </template>
 
-        <template x-if="view === 'shipcalc'">
-            <section class="max-w-3xl mx-auto animate-fade">
-                <div class="p-8 bg-[#080808] border border-white/5 rounded-3xl">
-                    <h2 class="text-3xl font-black uppercase mb-6">🚢 Ship <span class="text-red-600">Calculator</span></h2>
-                    <div class="space-y-6">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Agent</label>
-                            <select x-model="calc.agent" class="calc-input">
-                                <option value="kakobuy">Kakobuy (-15%)</option>
-                                <option value="usfans">USFans (-30%)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2" x-text="lang === 'pl' ? 'Waga (gramy)' : 'Weight (grams)'"></label>
-                            <input type="number" x-model="calc.weight" placeholder="np. 5000" class="calc-input">
-                        </div>
-                        <div class="p-6 bg-white/5 rounded-2xl border border-white/10">
-                            <p class="text-sm text-gray-400 mb-1" x-text="lang === 'pl' ? 'Szacowany koszt:' : 'Estimated cost:'"></p>
-                            <p class="text-4xl font-black text-red-600"><span x-text="calculateShip()"></span> <span x-text="currency"></span></p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </template>
-
         <template x-if="view === 'converter'">
             <section class="max-w-3xl mx-auto animate-fade">
                 <div class="p-8 bg-[#080808] border border-white/5 rounded-3xl">
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-12 h-12 bg-red-600/10 rounded-xl flex items-center justify-center text-red-600 text-2xl">
-                            <i class="fa-solid fa-robot"></i>
-                        </div>
-                        <h2 class="text-3xl font-black uppercase tracking-tighter" x-text="t.convTitle"></h2>
-                    </div>
-                    <p class="text-gray-500 mb-8 font-medium" x-text="t.convDesc"></p>
+                    <h2 class="text-3xl font-black uppercase tracking-tighter mb-8"><i class="fa-solid fa-robot text-red-600 mr-2"></i> <span x-text="t.convTitle"></span></h2>
                     <input type="text" x-model="convUrl" @input="convertLink()" :placeholder="t.convPlace" class="calc-input text-lg p-6 mb-8">
                     
-                    <div class="space-y-3" x-show="botResult" x-cloak>
-                        <div class="grid grid-cols-1 gap-4">
-                            <a :href="botResult.kako" target="_blank" class="agent-btn btn-kako">
-                                <img src="https://www.kakobuy.com/favicon.ico" class="w-8 h-8 object-contain">
-                                <span class="flex-grow">Kakobuy</span>
-                                <i class="fa-solid fa-chevron-right opacity-40"></i>
-                            </a>
-                            <a :href="botResult.usf" target="_blank" class="agent-btn btn-usf">
-                                <img src="https://www.usfans.com/favicon.ico" class="w-8 h-8 object-contain">
-                                <span class="flex-grow">USFans</span>
-                                <i class="fa-solid fa-chevron-right opacity-40"></i>
-                            </a>
-                        </div>
+                    <div class="space-y-4" x-show="botResult" x-cloak>
+                        <a :href="botResult.kako" target="_blank" class="agent-btn btn-kako">
+                            <img src="https://www.kakobuy.com/favicon.ico" class="w-8 h-8">
+                            <span class="flex-grow">Kakobuy (15% OFF)</span>
+                            <i class="fa-solid fa-chevron-right opacity-40"></i>
+                        </a>
+                        <a :href="botResult.usf" target="_blank" class="agent-btn btn-usf">
+                            <img src="https://www.usfans.com/favicon.ico" class="w-8 h-8">
+                            <span class="flex-grow">USFans (30% OFF)</span>
+                            <i class="fa-solid fa-chevron-right opacity-40"></i>
+                        </a>
                     </div>
                 </div>
             </section>
@@ -161,29 +125,16 @@
         <template x-if="view === 'qcfinder'">
             <section class="max-w-5xl mx-auto animate-fade">
                 <div class="p-8 bg-[#080808] border border-white/5 rounded-3xl text-center">
-                    <div class="flex justify-center items-center gap-4 mb-4">
-                        <div class="w-12 h-12 bg-red-600/10 rounded-xl flex items-center justify-center text-red-600 text-2xl">
-                            <i class="fa-solid fa-camera-retro"></i>
-                        </div>
-                        <h2 class="text-3xl font-black uppercase tracking-tighter">Quality <span class="text-red-600">Checks</span></h2>
-                    </div>
-                    <p class="text-gray-500 mb-8 font-medium" x-text="t.qcDesc"></p>
-                    
+                    <h2 class="text-3xl font-black uppercase tracking-tighter mb-4">Quality <span class="text-red-600">Checks</span></h2>
                     <div class="flex flex-col md:flex-row gap-4 justify-center mb-8">
                         <input type="text" x-model="qcInputUrl" :placeholder="t.qcPlace" class="calc-input text-lg p-4 md:w-2/3" @keyup.enter="fetchQC()">
-                        <button @click="fetchQC()" class="btn-main-red px-8 py-4 font-black uppercase tracking-widest"><i class="fa-solid fa-magnifying-glass mr-2"></i> Szukaj</button>
+                        <button @click="fetchQC()" class="btn-main-red px-8 py-4 font-black uppercase tracking-widest transition">Szukaj</button>
                     </div>
-
-                    <div x-show="qcLoading" class="spinner"></div>
-
-                    <div x-show="qcError" class="text-red-500 font-bold p-4 bg-red-500/10 rounded-xl mb-4" x-cloak>
-                        Nie udało się pobrać zdjęć. Sprawdź link i spróbuj ponownie.
-                    </div>
-
-                    <div x-show="qcPhotos.length > 0" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-8" x-cloak>
-                        <template x-for="photo in qcPhotos" :key="photo">
+                    <div x-show="qcLoading" class="w-10 h-10 border-4 border-red-600/20 border-l-red-600 rounded-full animate-spin mx-auto my-10"></div>
+                    <div x-show="qcPhotos.length > 0" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" x-cloak>
+                        <template x-for="photo in qcPhotos">
                             <div class="qc-image-card" @click="selectedPhoto = photo">
-                                <img :src="photo" alt="QC Photo" loading="lazy" onerror="this.src='https://via.placeholder.com/200/111/fff?text=Error'">
+                                <img :src="photo" loading="lazy">
                             </div>
                         </template>
                     </div>
@@ -194,31 +145,19 @@
         <template x-if="view === 'admin'">
             <section class="max-w-4xl mx-auto animate-fade">
                 <div class="p-8 bg-[#080808] border border-white/5 rounded-3xl">
-                    <h2 class="text-3xl font-black uppercase mb-8 tracking-tighter">Admin <span class="text-red-600">Panel</span></h2>
-                    <div class="bg-[#111] p-6 rounded-2xl border border-[#222] mb-8">
-                        <h3 class="font-bold mb-4 uppercase text-sm text-gray-400">Dodaj nowy przedmiot do bazy</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <input type="text" x-model="adminForm.title" placeholder="Nazwa modelu" class="calc-input">
-                            <input type="text" x-model="adminForm.price" placeholder="Cena (np. 300 CNY)" class="calc-input">
-                            <input type="text" x-model="adminForm.link" placeholder="Link do zakupu" class="calc-input md:col-span-2">
-                            <input type="text" x-model="adminForm.img" placeholder="Link do zdjęcia głównego" class="calc-input md:col-span-2">
-                        </div>
-                        <button @click="adminAddItem()" class="btn-main-red px-8 py-3 mt-4 text-sm">Zapisz Produkt</button>
+                    <h2 class="text-3xl font-black uppercase mb-8">Admin <span class="text-red-600">Panel</span></h2>
+                    <div x-show="!isAdmin" class="flex flex-col gap-4">
+                        <input type="password" x-model="adminPass" placeholder="Podaj hasło admina..." class="calc-input">
+                        <button @click="checkAdmin()" class="btn-main-red py-3">Zaloguj</button>
                     </div>
-                    
-                    <div class="space-y-3">
-                        <template x-for="(item, index) in adminItems" :key="index">
-                            <div class="bg-[#111] p-4 rounded-xl flex justify-between items-center border border-[#222]">
-                                <div class="flex items-center gap-4">
-                                    <img :src="item.img" class="w-12 h-12 rounded-lg object-cover">
-                                    <div>
-                                        <p class="font-bold uppercase text-sm" x-text="item.title"></p>
-                                        <p class="text-xs text-red-600 font-black" x-text="item.price"></p>
-                                    </div>
-                                </div>
-                                <button @click="adminRemoveItem(index)" class="w-10 h-10 bg-red-600/10 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition"><i class="fa-solid fa-trash"></i></button>
-                            </div>
-                        </template>
+                    <div x-show="isAdmin" x-cloak>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <input type="text" x-model="adminForm.title" placeholder="Nazwa" class="calc-input">
+                            <input type="text" x-model="adminForm.price" placeholder="Cena" class="calc-input">
+                            <input type="text" x-model="adminForm.link" placeholder="Link przedmiotu" class="calc-input md:col-span-2">
+                            <input type="text" x-model="adminForm.img" placeholder="Link do zdjęcia" class="calc-input md:col-span-2">
+                        </div>
+                        <button @click="adminAddItem()" class="btn-main-red px-8 py-3 w-full">Dodaj produkt</button>
                     </div>
                 </div>
             </section>
@@ -226,45 +165,63 @@
     </main>
 
     <div x-show="openMenu" class="fixed inset-0 z-[100]" x-cloak>
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-md" @click="openMenu = false"></div>
-        <div class="absolute inset-y-0 right-0 w-full md:w-[400px] menu-sidebar p-8 shadow-2xl overflow-y-auto" x-transition>
-            <div class="flex justify-between items-center mb-12">
-                <h2 class="text-3xl font-black uppercase tracking-tighter">MENU</h2>
-                <button @click="openMenu = false" class="w-10 h-10 bg-white/5 rounded-xl"><i class="fa-solid fa-xmark"></i></button>
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-md" @click="openMenu = false"></div>
+        <div class="absolute inset-y-0 right-0 w-full md:w-[400px] menu-sidebar p-8 overflow-y-auto" x-transition>
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-2xl font-black">MENU</h2>
+                <button @click="openMenu = false" class="text-2xl opacity-50"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="space-y-3">
+
+            <p class="text-[10px] font-bold text-gray-600 uppercase mb-4 tracking-widest">Główne</p>
+            <div class="space-y-3 mb-10">
                 <div @click="view = 'products'; openMenu = false" class="menu-tile">
                     <div class="flex items-center gap-4">
                         <div class="menu-icon-box"><i class="fa-solid fa-magnifying-glass"></i></div>
                         <span class="font-bold">Browse Finds</span>
                     </div>
                 </div>
+                <div @click="window.open(discordLink)" class="menu-tile">
+                    <div class="flex items-center gap-4">
+                        <div class="menu-icon-box"><i class="fa-brands fa-discord text-blue-500"></i></div>
+                        <span class="font-bold">Discord</span>
+                    </div>
+                    <span class="bg-red-600 text-[10px] font-black px-3 py-1 rounded-md">DOŁĄCZ</span>
+                </div>
+                <div @click="view = 'converter'; openMenu = false" class="menu-tile border-red-600/30">
+                    <div class="flex items-center gap-4">
+                        <div class="menu-icon-box !text-red-500"><i class="fa-solid fa-robot"></i></div>
+                        <span class="font-bold">Link Converter</span>
+                    </div>
+                    <span class="text-[8px] font-black opacity-30">BOT</span>
+                </div>
                 <div @click="view = 'qcfinder'; openMenu = false" class="menu-tile">
                     <div class="flex items-center gap-4">
-                        <div class="menu-icon-box !text-red-500"><i class="fa-solid fa-camera-retro"></i></div>
+                        <div class="menu-icon-box"><i class="fa-solid fa-camera"></i></div>
                         <span class="font-bold">Quality Checks</span>
                     </div>
                 </div>
-                <div @click="view = 'converter'; openMenu = false" class="menu-tile">
-                    <div class="flex items-center gap-4">
-                        <div class="menu-icon-box"><i class="fa-solid fa-robot"></i></div>
-                        <span class="font-bold">Link Converter</span>
+            </div>
+
+            <p class="text-[10px] font-bold text-gray-600 uppercase mb-4 tracking-widest">Ustawienia</p>
+            <div class="bg-[#111] p-6 rounded-3xl border border-white/5 space-y-6 mb-8">
+                <div class="flex justify-between items-center">
+                    <span class="text-sm font-bold text-gray-400">Język</span>
+                    <div class="flex gap-3">
+                        <img src="https://flagcdn.com/w40/pl.png" @click="setLang('pl')" class="flag-icon" :class="lang === 'pl' ? 'active' : ''">
+                        <img src="https://flagcdn.com/w40/gb.png" @click="setLang('en')" class="flag-icon" :class="lang === 'en' ? 'active' : ''">
                     </div>
                 </div>
-                <div @click="view = 'shipcalc'; openMenu = false" class="menu-tile">
-                    <div class="flex items-center gap-4">
-                        <div class="menu-icon-box"><i class="fa-solid fa-ship"></i></div>
-                        <span class="font-bold">Ship Calculator</span>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm font-bold text-gray-400">Waluta</span>
+                    <div class="currency-toggle">
+                        <button @click="currency = 'PLN'" class="currency-btn" :class="currency === 'PLN' ? 'active' : ''">PLN</button>
+                        <button @click="currency = 'USD'" class="currency-btn" :class="currency === 'USD' ? 'active' : ''">USD</button>
                     </div>
                 </div>
-                <div class="pt-6">
-                    <div @click="view = 'admin'; openMenu = false" class="menu-tile border-red-600/20 bg-red-600/5">
-                        <div class="flex items-center gap-4">
-                            <div class="menu-icon-box !bg-red-600/10 !text-red-600"><i class="fa-solid fa-lock"></i></div>
-                            <span class="font-bold text-red-500">Admin Panel</span>
-                        </div>
-                    </div>
-                </div>
+            </div>
+
+            <div @click="view = 'admin'; openMenu = false" class="text-center opacity-20 hover:opacity-100 transition cursor-pointer text-[10px] font-bold uppercase tracking-[4px]">
+                Admin Panel
             </div>
         </div>
     </div>
@@ -276,28 +233,24 @@
                 selectedPhoto: null,
                 discordLink: 'https://discord.gg/DTb5mkpNuH',
                 aff: { kakobuy: 'maksr3ps', usfans: 'DJPZ6T' },
-                calc: { agent: 'usfans', weight: 10000 },
                 convUrl: '', botResult: null,
-                qcInputUrl: '', qcPhotos: [], qcLoading: false, qcError: false,
+                qcInputUrl: '', qcPhotos: [], qcLoading: false,
+                isAdmin: false, adminPass: '',
                 adminForm: { title: '', price: '', link: '', img: '' },
                 adminItems: [
-                    { title: "Jordan 4 Retro SB Pine Green", price: "330 CNY", link: "https://weidian.com/item.html?itemID=7496641474", img: "https://static.nike.com/a/images/t_prod_ss/w_960,c_limit,f_auto/e2540a3d-4c3d-400f-8700-47b2c7e0c70d/sb-air-jordan-4-pine-green-dr5415-103-release-date.jpg" }
+                    { title: "Jordan 4 Retro SB Pine Green", price: "330", link: "https://weidian.com/item.html?itemID=7496641474", img: "https://static.nike.com/a/images/t_prod_ss/w_960,c_limit,f_auto/e2540a3d-4c3d-400f-8700-47b2c7e0c70d/sb-air-jordan-4-pine-green-dr5415-103-release-date.jpg" }
                 ],
                 t: {},
                 translations: {
-                    pl: { heroTitle: 'THE ULTIMATE<br><span class="text-red-600">REP</span> COMMUNITY', heroSub: 'Najlepsze znaleziska i największa społeczność Reps w Polsce.', browseBtn: 'Przeglądaj Produkty', discordBtn: 'Discord', convTitle: 'Link Converter', convDesc: 'Konwertuj linki na wersje agentów.', convPlace: 'Wklej link...', qcDesc: 'Podgląd zdjęć prosto z magazynu.', qcPlace: 'Wklej link Weidian/Taobao...' },
-                    en: { heroTitle: 'THE ULTIMATE<br><span class="text-red-600">REP</span> COMMUNITY', heroSub: 'Best finds and the biggest Reps community.', browseBtn: 'Browse Products', discordBtn: 'Discord', convTitle: 'Link Converter', convDesc: 'Convert links for agents.', convPlace: 'Paste link...', qcDesc: 'Warehouse photo preview.', qcPlace: 'Paste Weidian/Taobao link...' }
+                    pl: { heroTitle: 'THE ULTIMATE<br><span class="text-red-600">REP</span> COMMUNITY', heroSub: 'Najlepsze znaleziska i największa społeczność Reps w Polsce.', browseBtn: 'Przeglądaj Produkty', discordBtn: 'Discord', convTitle: 'Link Converter', convPlace: 'Wklej link (Weidian/Taobao/1688)...', qcPlace: 'Wklej link do przedmiotu...' },
+                    en: { heroTitle: 'THE ULTIMATE<br><span class="text-red-600">REP</span> COMMUNITY', heroSub: 'Best finds and the biggest Reps community in Poland.', browseBtn: 'Browse Products', discordBtn: 'Discord', convTitle: 'Link Converter', convPlace: 'Paste link (Weidian/Taobao/1688)...', qcPlace: 'Paste item link...' }
                 },
                 init() { this.setLang('pl'); },
                 setLang(l) { this.lang = l; this.t = this.translations[l]; },
-                calculateShip() {
-                    let w = this.calc.weight || 0;
-                    let rate = this.calc.agent === 'usfans' ? (w * 0.05 * 0.70) : (w * 0.054 * 0.85);
-                    return this.currency === 'USD' ? (rate / 4).toFixed(2) : rate.toFixed(2);
-                },
+                checkAdmin() { if(this.adminPass === 'maksadmin2024') this.isAdmin = true; },
                 convertLink() {
                     let url = this.convUrl.trim();
-                    if (!url) return;
+                    if (!url) { this.botResult = null; return; }
                     let idMatch = url.match(/id=(\d+)/) || url.match(/itemID=(\d+)/);
                     if (idMatch) {
                         this.botResult = {
@@ -306,58 +259,34 @@
                         };
                     }
                 },
-                
                 openQCWithLink(url) {
                     this.qcInputUrl = url;
                     this.view = 'qcfinder';
                     this.fetchQC();
                 },
-
                 async fetchQC() {
-                    let input = this.qcInputUrl.trim();
-                    if (!input) return;
+                    if (!this.qcInputUrl) return;
                     this.qcLoading = true;
-                    this.qcError = false;
                     this.qcPhotos = [];
-                    const apiEndpoint = `https://api.xms4192.workers.dev/qc?url=${encodeURIComponent(input)}`;
-
                     try {
-                        const response = await fetch(apiEndpoint);
-                        const data = await response.json();
-                        let found = [];
-
-                        if (Array.isArray(data)) {
-                            found = data;
-                        } else {
-                            const deepSearch = (obj) => {
-                                let results = [];
-                                for (let key in obj) {
-                                    if (typeof obj[key] === 'string' && (obj[key].includes('.jpg') || obj[key].includes('.png') || obj[key].includes('.webp') || obj[key].startsWith('http'))) {
-                                        results.push(obj[key]);
-                                    } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-                                        results = results.concat(deepSearch(obj[key]));
-                                    }
-                                }
-                                return results;
-                            };
-                            found = deepSearch(data);
-                        }
-
-                        this.qcPhotos = [...new Set(found)].filter(url => typeof url === 'string' && url.length > 10 && url.startsWith('http'));
-                        if (this.qcPhotos.length === 0) this.qcError = true;
-                    } catch (e) {
-                        this.qcError = true;
-                    } finally {
-                        this.qcLoading = false;
-                    }
+                        const res = await fetch(`https://api.xms4192.workers.dev/qc?url=${encodeURIComponent(this.qcInputUrl)}`);
+                        const data = await res.json();
+                        const deepSearch = (obj) => {
+                            let results = [];
+                            for (let key in obj) {
+                                if (typeof obj[key] === 'string' && obj[key].startsWith('http') && obj[key].match(/\.(jpg|jpeg|png|webp)/i)) results.push(obj[key]);
+                                else if (typeof obj[key] === 'object' && obj[key] !== null) results = results.concat(deepSearch(obj[key]));
+                            }
+                            return results;
+                        };
+                        this.qcPhotos = [...new Set(deepSearch(data))].filter(u => u.length > 20);
+                    } catch (e) { console.error(e); }
+                    this.qcLoading = false;
                 },
-
                 adminAddItem() {
-                    if (!this.adminForm.title || !this.adminForm.link) return;
                     this.adminItems.unshift({...this.adminForm});
                     this.adminForm = { title: '', price: '', link: '', img: '' };
-                },
-                adminRemoveItem(i) { this.adminItems.splice(i, 1); }
+                }
             }
         }
     </script>
