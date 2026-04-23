@@ -247,7 +247,6 @@
                 init() { 
                     this.setLang('pl'); 
 
-                    // --- DODATEK DLA BOTA ---
                     const params = new URLSearchParams(window.location.search);
                     const urlParam = params.get('url');
 
@@ -258,7 +257,6 @@
                             this.fetchQC();
                         }, 600);
                     }
-                    // -------------------------
                 },
                 setLang(l) { this.lang = l; this.t = this.translations[l]; },
                 checkAdmin() { if(this.adminPass === 'maksadmin2024') this.isAdmin = true; },
@@ -286,22 +284,32 @@
                     this.qcLoading = true;
                     this.qcPhotos = [];
 
+                    let finalUrl = this.qcInputUrl.trim();
+                    // Jeśli link zawiera 'url=', wyciągamy czysty link do produktu
+                    if (finalUrl.includes('url=')) {
+                        try {
+                            const urlObj = new URL(finalUrl);
+                            const params = new URLSearchParams(urlObj.search);
+                            if (params.has('url')) finalUrl = params.get('url');
+                        } catch(e) { console.error("URL Parsing error"); }
+                    }
+
                     try {
-                        const res = await fetch(`https://api.xms4192.workers.dev/qc?url=${encodeURIComponent(this.qcInputUrl)}`);
+                        const res = await fetch(`https://api.xms4192.workers.dev/qc?url=${encodeURIComponent(finalUrl)}`);
                         const data = await res.json();
                         
                         let results = [];
                         const deepSearch = (obj) => {
+                            if (!obj) return;
                             for (let key in obj) {
-                                if (typeof obj[key] === 'string' && (obj[key].includes('http') || obj[key].startsWith('//'))) {
-                                    let link = obj[key];
-                                    if (link.startsWith('//')) link = 'https:' + link;
-                                    
-                                    if (link.match(/\.(jpg|jpeg|png|webp)/i)) {
-                                        results.push(link);
+                                let val = obj[key];
+                                if (typeof val === 'string') {
+                                    if ((val.includes('http') || val.startsWith('//')) && val.match(/\.(jpg|jpeg|png|webp)/i)) {
+                                        let link = val.startsWith('//') ? 'https:' + val : val;
+                                        if (link.length > 30) results.push(link);
                                     }
-                                } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-                                    deepSearch(obj[key]);
+                                } else if (typeof val === 'object' && val !== null) {
+                                    deepSearch(val);
                                 }
                             }
                         };
