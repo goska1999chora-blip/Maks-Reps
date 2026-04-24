@@ -39,13 +39,22 @@
         
         .qc-image-card { border-radius: 12px; overflow: hidden; border: 1px solid #222; transition: 0.3s; cursor: pointer; background: #0a0a0a; }
         .qc-image-card:hover { border-color: #ff0000; transform: scale(1.02); }
-        .qc-image-card img { width: 100%; height: auto; display: block; min-height: 100px; }
+        .qc-image-card img { width: 100%; height: auto; display: block; }
         
         .spinner { border: 4px solid rgba(255,0,0,0.1); border-left-color: #ff0000; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 40px auto;}
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Styl Lightboxa */
+        .lightbox-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 200; display: flex; align-items: center; justify-content: center; backdrop-blur: 10px; cursor: zoom-out; }
+        .lightbox-img { max-width: 90%; max-height: 90%; border-radius: 12px; box-shadow: 0 0 50px rgba(0,0,0,0.5); cursor: default; }
     </style>
 </head>
 <body x-data="siteHandler()">
+
+    <div x-show="selectedPhoto" class="lightbox-overlay animate-fade" @click="selectedPhoto = null" x-cloak>
+        <button class="absolute top-10 right-10 text-white text-3xl hover:text-red-600 transition"><i class="fa-solid fa-xmark"></i></button>
+        <img :src="selectedPhoto" class="lightbox-img" @click.stop>
+    </div>
 
     <nav class="fixed w-full z-50 px-6 py-5 flex justify-between items-center bg-black/80 backdrop-blur-xl border-b border-white/5">
         <div class="text-2xl font-black tracking-tighter cursor-pointer uppercase" @click="view = 'home'">
@@ -63,8 +72,33 @@
                 <h1 class="hero-title mb-8" x-html="t.heroTitle"></h1>
                 <p class="text-gray-500 max-w-xl mb-16 text-lg font-medium" x-text="t.heroSub"></p>
                 <div class="flex flex-col md:flex-row gap-5 w-full max-w-sm md:max-w-none justify-center">
-                    <button @click="view = 'qcfinder'" class="btn-main-red px-12 py-5 w-full md:w-auto">QC FINDER</button>
+                    <button @click="view = 'products'" class="btn-main-red px-12 py-5 w-full md:w-auto" x-text="t.browseBtn"></button>
                     <button @click="window.open(discordLink)" class="btn-main-black px-12 py-5 w-full md:w-auto" x-text="t.discordBtn"></button>
+                </div>
+            </section>
+        </template>
+
+        <template x-if="view === 'products'">
+            <section class="max-w-6xl mx-auto animate-fade">
+                <h2 class="text-4xl font-black uppercase mb-10 tracking-tighter">Premium <span class="text-red-600">Finds</span></h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <template x-for="item in adminItems">
+                        <div class="bg-[#080808] border border-white/5 rounded-3xl overflow-hidden group hover:border-red-600/30 transition duration-300">
+                            <div class="h-64 overflow-hidden bg-[#111]">
+                                <img :src="item.img" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h3 class="font-bold text-xl uppercase leading-tight" x-text="item.title"></h3>
+                                    <span class="text-red-600 font-black" x-text="item.price"></span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button @click="openQCWithLink(item.link)" class="bg-white/5 hover:bg-white/10 text-xs font-black p-3 rounded-xl flex-grow uppercase">QC Check</button>
+                                    <a :href="item.link" target="_blank" class="btn-main-red text-xs font-black p-3 rounded-xl flex-grow text-center">Buy Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                 </div>
             </section>
         </template>
@@ -143,13 +177,13 @@
                     <div x-show="qcLoading" class="spinner"></div>
 
                     <div x-show="qcError" class="text-red-500 font-bold p-4 bg-red-500/10 rounded-xl mb-4" x-cloak>
-                        Nie udało się pobrać zdjęć. Sprawdź czy link jest poprawny lub spróbuj ponownie.
+                        Nie udało się pobrać zdjęć. Sprawdź link i spróbuj ponownie.
                     </div>
 
                     <div x-show="qcPhotos.length > 0" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-8" x-cloak>
                         <template x-for="photo in qcPhotos" :key="photo">
-                            <div class="qc-image-card" @click="window.open(photo, '_blank')">
-                                <img :src="photo" alt="QC Photo" onerror="this.src='https://via.placeholder.com/200/111/fff?text=Error+Loading'">
+                            <div class="qc-image-card" @click="selectedPhoto = photo">
+                                <img :src="photo" alt="QC Photo" loading="lazy" onerror="this.src='https://via.placeholder.com/200/111/fff?text=Error'">
                             </div>
                         </template>
                     </div>
@@ -160,25 +194,29 @@
         <template x-if="view === 'admin'">
             <section class="max-w-4xl mx-auto animate-fade">
                 <div class="p-8 bg-[#080808] border border-white/5 rounded-3xl">
-                    <h2 class="text-3xl font-black uppercase mb-8">Admin <span class="text-red-600">Panel</span></h2>
+                    <h2 class="text-3xl font-black uppercase mb-8 tracking-tighter">Admin <span class="text-red-600">Panel</span></h2>
                     <div class="bg-[#111] p-6 rounded-2xl border border-[#222] mb-8">
-                        <h3 class="font-bold mb-4 uppercase">Dodaj przedmiot</h3>
+                        <h3 class="font-bold mb-4 uppercase text-sm text-gray-400">Dodaj nowy przedmiot do bazy</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <input type="text" x-model="adminForm.title" placeholder="Nazwa" class="calc-input">
-                            <input type="text" x-model="adminForm.price" placeholder="Cena" class="calc-input">
-                            <input type="text" x-model="adminForm.link" placeholder="Link przedmiotu" class="calc-input md:col-span-2">
-                            <input type="text" x-model="adminForm.img" placeholder="Link do miniatury" class="calc-input md:col-span-2">
+                            <input type="text" x-model="adminForm.title" placeholder="Nazwa modelu" class="calc-input">
+                            <input type="text" x-model="adminForm.price" placeholder="Cena (np. 300 CNY)" class="calc-input">
+                            <input type="text" x-model="adminForm.link" placeholder="Link do zakupu" class="calc-input md:col-span-2">
+                            <input type="text" x-model="adminForm.img" placeholder="Link do zdjęcia głównego" class="calc-input md:col-span-2">
                         </div>
-                        <button @click="adminAddItem()" class="btn-main-red px-6 py-3 mt-4">Dodaj</button>
+                        <button @click="adminAddItem()" class="btn-main-red px-8 py-3 mt-4 text-sm">Zapisz Produkt</button>
                     </div>
+                    
                     <div class="space-y-3">
                         <template x-for="(item, index) in adminItems" :key="index">
                             <div class="bg-[#111] p-4 rounded-xl flex justify-between items-center border border-[#222]">
-                                <div class="flex items-center gap-3">
-                                    <img :src="item.img" class="w-10 h-10 rounded object-cover">
-                                    <span class="font-bold" x-text="item.title"></span>
+                                <div class="flex items-center gap-4">
+                                    <img :src="item.img" class="w-12 h-12 rounded-lg object-cover">
+                                    <div>
+                                        <p class="font-bold uppercase text-sm" x-text="item.title"></p>
+                                        <p class="text-xs text-red-600 font-black" x-text="item.price"></p>
+                                    </div>
                                 </div>
-                                <button @click="adminRemoveItem(index)" class="text-red-600"><i class="fa-solid fa-trash"></i></button>
+                                <button @click="adminRemoveItem(index)" class="w-10 h-10 bg-red-600/10 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition"><i class="fa-solid fa-trash"></i></button>
                             </div>
                         </template>
                     </div>
@@ -195,6 +233,12 @@
                 <button @click="openMenu = false" class="w-10 h-10 bg-white/5 rounded-xl"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="space-y-3">
+                <div @click="view = 'products'; openMenu = false" class="menu-tile">
+                    <div class="flex items-center gap-4">
+                        <div class="menu-icon-box"><i class="fa-solid fa-magnifying-glass"></i></div>
+                        <span class="font-bold">Browse Finds</span>
+                    </div>
+                </div>
                 <div @click="view = 'qcfinder'; openMenu = false" class="menu-tile">
                     <div class="flex items-center gap-4">
                         <div class="menu-icon-box !text-red-500"><i class="fa-solid fa-camera-retro"></i></div>
@@ -213,10 +257,12 @@
                         <span class="font-bold">Ship Calculator</span>
                     </div>
                 </div>
-                <div @click="view = 'admin'; openMenu = false" class="menu-tile border-red-600/20">
-                    <div class="flex items-center gap-4">
-                        <div class="menu-icon-box !text-gray-400"><i class="fa-solid fa-lock"></i></div>
-                        <span class="font-bold">Admin Panel</span>
+                <div class="pt-6">
+                    <div @click="view = 'admin'; openMenu = false" class="menu-tile border-red-600/20 bg-red-600/5">
+                        <div class="flex items-center gap-4">
+                            <div class="menu-icon-box !bg-red-600/10 !text-red-600"><i class="fa-solid fa-lock"></i></div>
+                            <span class="font-bold text-red-500">Admin Panel</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -227,17 +273,20 @@
         function siteHandler() {
             return {
                 view: 'home', openMenu: false, lang: 'pl', currency: 'PLN',
+                selectedPhoto: null,
                 discordLink: 'https://discord.gg/DTb5mkpNuH',
                 aff: { kakobuy: 'maksr3ps', usfans: 'DJPZ6T' },
                 calc: { agent: 'usfans', weight: 10000 },
                 convUrl: '', botResult: null,
                 qcInputUrl: '', qcPhotos: [], qcLoading: false, qcError: false,
                 adminForm: { title: '', price: '', link: '', img: '' },
-                adminItems: [],
+                adminItems: [
+                    { title: "Jordan 4 Retro SB Pine Green", price: "330 CNY", link: "https://weidian.com/item.html?itemID=7496641474", img: "https://static.nike.com/a/images/t_prod_ss/w_960,c_limit,f_auto/e2540a3d-4c3d-400f-8700-47b2c7e0c70d/sb-air-jordan-4-pine-green-dr5415-103-release-date.jpg" }
+                ],
                 t: {},
                 translations: {
-                    pl: { heroTitle: 'THE ULTIMATE<br><span class="text-red-600">REP</span> COMMUNITY', heroSub: 'Najlepsze znaleziska i największa społeczność Reps w Polsce.', discordBtn: 'Discord', mainSection: 'GŁÓWNE', settingsSection: 'USTAWIENIA', langLabel: 'Język', currencyLabel: 'Waluta', convTitle: 'Link Converter', convDesc: 'Konwertuj linki na wersje agentów.', convPlace: 'Wklej link...', qcDesc: 'Podgląd zdjęć prosto z magazynu.', qcPlace: 'Wklej link Weidian/Taobao...' },
-                    en: { heroTitle: 'THE ULTIMATE<br><span class="text-red-600">REP</span> COMMUNITY', heroSub: 'Best finds and the biggest Reps community.', discordBtn: 'Discord', mainSection: 'MAIN', settingsSection: 'SETTINGS', langLabel: 'Language', currencyLabel: 'Currency', convTitle: 'Link Converter', convDesc: 'Convert links for agents.', convPlace: 'Paste link...', qcDesc: 'Warehouse photo preview.', qcPlace: 'Paste Weidian/Taobao link...' }
+                    pl: { heroTitle: 'THE ULTIMATE<br><span class="text-red-600">REP</span> COMMUNITY', heroSub: 'Najlepsze znaleziska i największa społeczność Reps w Polsce.', browseBtn: 'Przeglądaj Produkty', discordBtn: 'Discord', convTitle: 'Link Converter', convDesc: 'Konwertuj linki na wersje agentów.', convPlace: 'Wklej link...', qcDesc: 'Podgląd zdjęć prosto z magazynu.', qcPlace: 'Wklej link Weidian/Taobao...' },
+                    en: { heroTitle: 'THE ULTIMATE<br><span class="text-red-600">REP</span> COMMUNITY', heroSub: 'Best finds and the biggest Reps community.', browseBtn: 'Browse Products', discordBtn: 'Discord', convTitle: 'Link Converter', convDesc: 'Convert links for agents.', convPlace: 'Paste link...', qcDesc: 'Warehouse photo preview.', qcPlace: 'Paste Weidian/Taobao link...' }
                 },
                 init() { this.setLang('pl'); },
                 setLang(l) { this.lang = l; this.t = this.translations[l]; },
@@ -258,38 +307,28 @@
                     }
                 },
                 
-                // SKRYPT QC FINDERA - WERSJA UNIWERSALNA
+                openQCWithLink(url) {
+                    this.qcInputUrl = url;
+                    this.view = 'qcfinder';
+                    this.fetchQC();
+                },
+
                 async fetchQC() {
                     let input = this.qcInputUrl.trim();
                     if (!input) return;
-                    
                     this.qcLoading = true;
                     this.qcError = false;
                     this.qcPhotos = [];
-
-                    // Endpoint Twojego API
                     const apiEndpoint = `https://api.xms4192.workers.dev/qc?url=${encodeURIComponent(input)}`;
 
                     try {
                         const response = await fetch(apiEndpoint);
                         const data = await response.json();
-                        
-                        console.log("Dane z API:", data);
-
-                        // Szukamy zdjęć wszędzie gdzie się da w otrzymanym JSONIE
                         let found = [];
 
-                        // 1. Sprawdzamy czy to po prostu tablica linków
                         if (Array.isArray(data)) {
                             found = data;
-                        } 
-                        // 2. Szukamy w najczęstszych polach (data, images, items, qc_photos)
-                        else if (data.data && Array.isArray(data.data)) found = data.data;
-                        else if (data.images && Array.isArray(data.images)) found = data.images;
-                        else if (data.item && data.item.images) found = data.item.images;
-                        
-                        // 3. Ostatnia szansa: Wyciągamy wszystko co wygląda jak link do zdjęcia z całego obiektu
-                        if (found.length === 0) {
+                        } else {
                             const deepSearch = (obj) => {
                                 let results = [];
                                 for (let key in obj) {
@@ -304,13 +343,9 @@
                             found = deepSearch(data);
                         }
 
-                        // Usuwamy duplikaty i czyścimy linki
-                        this.qcPhotos = [...new Set(found)].filter(url => typeof url === 'string' && url.length > 10);
-
+                        this.qcPhotos = [...new Set(found)].filter(url => typeof url === 'string' && url.length > 10 && url.startsWith('http'));
                         if (this.qcPhotos.length === 0) this.qcError = true;
-
                     } catch (e) {
-                        console.error("Błąd QC:", e);
                         this.qcError = true;
                     } finally {
                         this.qcLoading = false;
@@ -318,7 +353,7 @@
                 },
 
                 adminAddItem() {
-                    if (!this.adminForm.title) return;
+                    if (!this.adminForm.title || !this.adminForm.link) return;
                     this.adminItems.unshift({...this.adminForm});
                     this.adminForm = { title: '', price: '', link: '', img: '' };
                 },
